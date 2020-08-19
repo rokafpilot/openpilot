@@ -114,7 +114,9 @@ class PathPlanner():
 
     # Run MPC
     self.angle_steers_des_prev = self.angle_steers_des_mpc
-    VM.update_params(sm['liveParameters'].stiffnessFactor, sm['liveParameters'].steerRatio)
+    #TODO : revert for SR learning
+    VM.update_params(sm['liveParameters'].stiffnessFactor, sm['liveParameters'].steerRatio)# this will use SR learned values.
+    #VM.update_params(sm['liveParameters'].stiffnessFactor, CP.steerRatio) #use ignore SR learned params
     curvature_factor = VM.curvature_factor(v_ego)
     
     # Get steerRatio and steerRateCost from kegman.json every x seconds
