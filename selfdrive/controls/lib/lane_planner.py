@@ -80,8 +80,8 @@ class LanePlanner():
       self.l_poly = model_polyfit(md.leftLane.points, self._path_pinv)  # left line
       self.r_poly = model_polyfit(md.rightLane.points, self._path_pinv)  # right line
       self.p_poly = model_polyfit(md.path.points, self._path_pinv)  # predicted path
-    self.l_prob = md.leftLane.prob  # left line prob
-    self.r_prob = md.rightLane.prob  # right line prob
+    self.l_prob = md.leftLane.prob *1.125 # left line prob
+    self.r_prob = md.rightLane.prob *1.125 # right line prob
 
     if len(md.meta.desireState):
       self.l_lane_change_prob = md.meta.desireState[log.PathPlan.Desire.laneChangeLeft - 1]
