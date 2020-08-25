@@ -1,0 +1,6 @@
+#!/system/bin/sh
+
+rm -rf /data/ntune
+git pull
+reboot
+

@@ -1022,7 +1022,7 @@ int main(int argc, char* argv[]) {
     // light sensor is only exposed on EONs
     float clipped_brightness = (s->light_sensor*BRIGHTNESS_M) + BRIGHTNESS_B;
     if (clipped_brightness > 512) clipped_brightness = 512;
-    smooth_brightness = clipped_brightness * 0.01 + smooth_brightness * 0.99;
+    smooth_brightness = 4 * clipped_brightness * 0.01 + smooth_brightness * 0.99;
     if (smooth_brightness > 255) smooth_brightness = 255;
     set_brightness(s, (int)smooth_brightness);
 
@@ -1080,6 +1080,7 @@ int main(int argc, char* argv[]) {
 
     // Don't waste resources on drawing in case screen is off
     if (s->awake) {
+      dashcam(s, touch_x, touch_y);
       ui_draw(s);
       glFinish();
       should_swap = true;
