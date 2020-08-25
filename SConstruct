@@ -11,6 +11,11 @@ AddOption('--asan',
           action='store_true',
           help='turn on ASAN')
 
+SetOption('num_jobs', 4)
+SetOption('implicit_cache', 1)
+env.Decider('timestamp-newer')
+Decider('timestamp-newer')
+
 arch = subprocess.check_output(["uname", "-m"], encoding='utf8').rstrip()
 if platform.system() == "Darwin":
   arch = "Darwin"
