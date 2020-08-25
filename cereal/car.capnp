@@ -38,7 +38,7 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     pedalPressed @13;
     cruiseDisabled @14;
     radarCanError @15;
-    dataNeededDEPRECATED @16;
+    dataNeeded @16;
     speedTooLow @17;
     outOfSpace @18;
     overheat @19;
@@ -49,29 +49,29 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     pcmDisable @24;
     noTarget @25;
     radarFault @26;
-    modelCommIssueDEPRECATED @27;
+    modelCommIssue @27;
     brakeHold @28;
     parkBrake @29;
     manualRestart @30;
     lowSpeedLockout @31;
     plannerError @32;
-    ipasOverrideDEPRECATED @33;
+    ipasOverride @33;
     debugAlert @34;
     steerTempUnavailableMute @35;
     resumeRequired @36;
     preDriverDistracted @37;
     promptDriverDistracted @38;
     driverDistracted @39;
-    geofenceDEPRECATED @40;
-    driverMonitorOnDEPRECATED @41;
-    driverMonitorOffDEPRECATED @42;
+    geofence @40;
+    driverMonitorOn @41;
+    driverMonitorOff @42;
     preDriverUnresponsive @43;
     promptDriverUnresponsive @44;
     driverUnresponsive @45;
     belowSteerSpeed @46;
-    calibrationProgressDEPRECATED @47;
+    calibrationProgress @47;
     lowBattery @48;
-    invalidGiraffeHondaDEPRECATED @49;
+    invalidGiraffeHonda @49;
     vehicleModelInvalid @50;
     controlsFailed @51;
     sensorDataInvalid @52;
@@ -105,7 +105,7 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     steerSaturated @80;
     whitePandaUnsupported @81;
     startupWhitePanda @82;
-    canErrorPersistentDEPRECATED @83;
+    canErrorPersistent @83;
     belowEngageSpeed @84;
     noGps @85;
     focusRecoverActive @86;
@@ -121,7 +121,7 @@ struct CarEvent @0x9b1657f34caf3ad3 {
 # all speeds in m/s
 
 struct CarState {
-  errorsDEPRECATED @0 :List(CarEvent.EventName);
+  errors @0 :List(CarEvent.EventName);
   events @13 :List(CarEvent);
 
   # car speed
@@ -281,9 +281,9 @@ struct CarControl {
   enabled @0 :Bool;
   active @7 :Bool;
 
-  gasDEPRECATED @1 :Float32;
-  brakeDEPRECATED @2 :Float32;
-  steeringTorqueDEPRECATED @3 :Float32;
+  gas @1 :Float32;
+  brake @2 :Float32;
+  steeringTorque @3 :Float32;
 
   actuators @6 :Actuators;
 
