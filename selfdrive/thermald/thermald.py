@@ -180,7 +180,7 @@ def thermald_thread():
   health_sock = messaging.sub_sock('health', timeout=health_timeout)
   location_sock = messaging.sub_sock('gpsLocation')
 
-  ignition = False
+  ignition = True
   fan_speed = 0
   count = 0
 
@@ -419,8 +419,8 @@ def thermald_thread():
     msg.thermal.offroadPowerUsage = pm.get_power_used()
 
     msg.thermal.chargingError = current_filter.x > 0. and msg.thermal.batteryPercent < 90  # if current is positive, then battery is being discharged
-    # msg.thermal.started = started_ts is not None
-    msg.thermal.started = True
+    msg.thermal.started = started_ts is not None
+    # msg.thermal.started = True
     msg.thermal.startedTs = int(1e9*(started_ts or 0))
 
     msg.thermal.thermalStatus = thermal_status
