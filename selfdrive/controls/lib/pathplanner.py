@@ -48,7 +48,7 @@ class PathPlanner():
     self.LP = LanePlanner()
 
     self.last_cloudlog_t = 0
-    self.steer_rate_cost = CP.steerRateCost
+    # self.steer_rate_cost = CP.steerRateCost
 
     self.setup_mpc()
     self.solution_invalid_cnt = 0
@@ -58,17 +58,20 @@ class PathPlanner():
     self.sR_delay_counter = 0
     self.steerRatio_new = 0.0
     self.sR_time = 1
-    
+
+    self.steerRatio = CP.steerRatio
+    self.steerRateCost = CP.steerRateCost
     kegman = kegman_conf(CP)
-    if kegman.conf['steerRatio'] == "-1":
-      self.steerRatio = CP.steerRatio
-    else:
-      self.steerRatio = float(kegman.conf['steerRatio'])
-      
-    if kegman.conf['steerRateCost'] == "-1":
-      self.steerRateCost = CP.steerRateCost
-    else:
-      self.steerRateCost = float(kegman.conf['steerRateCost'])
+
+    # if kegman.conf['steerRatio'] == "-1":
+    #   self.steerRatio = CP.steerRatio
+    # else:
+    #   self.steerRatio = float(kegman.conf['steerRatio'])
+    #
+    # if kegman.conf['steerRateCost'] == "-1":
+    #   self.steerRateCost = CP.steerRateCost
+    # else:
+    #   self.steerRateCost = float(kegman.conf['steerRateCost'])
       
     self.sR = [float(kegman.conf['steerRatio']), (float(kegman.conf['steerRatio']) + float(kegman.conf['sR_boost']))]
     self.sRBP = [float(kegman.conf['sR_BP0']), float(kegman.conf['sR_BP1'])]
