@@ -19,7 +19,7 @@
 #include "sound.hpp"
 #include "dashcam.h"
 
-static int last_brightness = -1; 
+static int last_brightness = -1;
 static void set_brightness(UIState *s, int brightness) {
   if (last_brightness != brightness && (s->awake || brightness == 0)) {
     FILE *f = fopen("/sys/class/leds/lcd-backlight/brightness", "wb");

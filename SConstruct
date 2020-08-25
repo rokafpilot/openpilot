@@ -13,7 +13,7 @@ AddOption('--asan',
 
 SetOption('num_jobs', 4)
 SetOption('implicit_cache', 1)
-env.Decider('timestamp-newer')
+
 Decider('timestamp-newer')
 
 arch = subprocess.check_output(["uname", "-m"], encoding='utf8').rstrip()
