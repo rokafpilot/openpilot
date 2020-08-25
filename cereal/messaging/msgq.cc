@@ -31,13 +31,7 @@ uint64_t msgq_get_uid(void){
   std::random_device rd("/dev/urandom");
   std::uniform_int_distribution<uint64_t> distribution(0,std::numeric_limits<uint32_t>::max());
 
-  #ifdef __APPLE__
-    // TODO: this doesn't work
-    uint64_t uid = distribution(rd) << 32 | getpid();
-  #else
-    uint64_t uid = distribution(rd) << 32 | syscall(SYS_gettid);
-  #endif
-
+  uint64_t uid = distribution(rd) << 32 | syscall(SYS_gettid);
   return uid;
 }
 
@@ -94,12 +88,10 @@ int msgq_new_queue(msgq_queue_t * q, const char * path, size_t size){
   strcat(full_path, path);
 
   auto fd = open(full_path, O_RDWR | O_CREAT, 0777);
-  if (fd < 0) {
-    std::cout << "Warning, could not open: " << full_path << std::endl;
-    delete[] full_path;
-    return -1;
-  }
   delete[] full_path;
+
+  if (fd < 0)
+    return -1;
 
   int rc = ftruncate(fd, size + sizeof(msgq_header_t));
   if (rc < 0)
