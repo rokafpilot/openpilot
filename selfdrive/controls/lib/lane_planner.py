@@ -83,11 +83,7 @@ class LanePlanner():
     self.l_prob = md.leftLane.prob  # left line prob
     self.r_prob = md.rightLane.prob  # right line prob
 
-    if self.l_prob < 0.5 :
-      self.l_prob = self.l_prob * 1.125
 
-    if self.r_prob < 0.5 :
-      self.r_prob = self.r_prob * 1.125
 
 
     if len(md.meta.desireState):
