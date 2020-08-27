@@ -61,7 +61,7 @@ class PathPlanner():
 
     self.steerRatio = CP.steerRatio
     self.steerRateCost = CP.steerRateCost
-    kegman = kegman_conf(CP)
+    # kegman = kegman_conf(CP)
 
     # if kegman.conf['steerRatio'] == "-1":
     #   self.steerRatio = CP.steerRatio
@@ -73,15 +73,15 @@ class PathPlanner():
     # else:
     #   self.steerRateCost = float(kegman.conf['steerRateCost'])
       
-    self.sR = [float(kegman.conf['steerRatio']), (float(kegman.conf['steerRatio']) + float(kegman.conf['sR_boost']))]
-    self.sRBP = [float(kegman.conf['sR_BP0']), float(kegman.conf['sR_BP1'])]
+    # self.sR = [float(kegman.conf['steerRatio']), (float(kegman.conf['steerRatio']) + float(kegman.conf['sR_boost']))]
+    # self.sRBP = [float(kegman.conf['sR_BP0']), float(kegman.conf['sR_BP1'])]
 
     self.steerRateCost_prev = self.steerRateCost
     self.setup_mpc()
 
-    self.alc_nudge_less = bool(int(kegman.conf['ALCnudgeLess']))
-    self.alc_min_speed = float(kegman.conf['ALCminSpeed'])
-    self.alc_timer = float(kegman.conf['ALCtimer'])
+    # self.alc_nudge_less = bool(int(kegman.conf['ALCnudgeLess']))
+    # self.alc_min_speed = float(kegman.conf['ALCminSpeed'])
+    # self.alc_timer = float(kegman.conf['ALCtimer'])
 
     self.lane_change_state = LaneChangeState.off
     self.lane_change_timer = 0.0
@@ -175,13 +175,13 @@ class PathPlanner():
       else:
         self.pre_lane_change_timer = 0.0
 
-      if self.alc_nudge_less and self.pre_lane_change_timer > self.alc_timer:
-        torque_applied = True
+      # if self.alc_nudge_less and self.pre_lane_change_timer > self.alc_timer:
+      #   torque_applied = True
+      # else:
+      if lane_change_direction == LaneChangeDirection.left:
+        torque_applied = sm['carState'].steeringTorque > 0 and sm['carState'].steeringPressed
       else:
-        if lane_change_direction == LaneChangeDirection.left:
-          torque_applied = sm['carState'].steeringTorque > 0 and sm['carState'].steeringPressed
-        else:
-          torque_applied = sm['carState'].steeringTorque < 0 and sm['carState'].steeringPressed
+        torque_applied = sm['carState'].steeringTorque < 0 and sm['carState'].steeringPressed
         
 
       lane_change_prob = self.LP.l_lane_change_prob + self.LP.r_lane_change_prob
