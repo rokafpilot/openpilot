@@ -564,6 +564,8 @@ void handle_message(UIState *s, Message * msg) {
     struct cereal_CarState datad;
     cereal_read_CarState(&datad, eventd.carState);
     s->scene.brakeLights = datad.brakeLights;
+    s->scene.brakePressed = datad.brakePressed;
+    s->scene.regenPressed = datad.regenPressed;
   } else if (eventd.which == cereal_Event_thermal) {
     struct cereal_ThermalData datad;
     cereal_read_ThermalData(&datad, eventd.thermal);
@@ -1020,11 +1022,11 @@ int main(int argc, char* argv[]) {
     double u1 = millis_since_boot();
 
     // light sensor is only exposed on EONs
-    float clipped_brightness = (s->light_sensor*BRIGHTNESS_M) + BRIGHTNESS_B;
-    if (clipped_brightness > 512) clipped_brightness = 512;
-    smooth_brightness = 4 * clipped_brightness * 0.01 + smooth_brightness * 0.99;
-    if (smooth_brightness > 255) smooth_brightness = 255;
-    set_brightness(s, (int)smooth_brightness);
+//    float clipped_brightness = (s->light_sensor*BRIGHTNESS_M) + BRIGHTNESS_B;
+//    if (clipped_brightness > 512) clipped_brightness = 512;
+//    smooth_brightness = 4 * clipped_brightness * 0.01 + smooth_brightness * 0.99;
+//    if (smooth_brightness > 255) smooth_brightness = 255;
+    set_brightness(s, (int)66);
 
     // resize vision for collapsing sidebar
     const bool hasSidebar = !s->scene.uilayout_sidebarcollapsed;
