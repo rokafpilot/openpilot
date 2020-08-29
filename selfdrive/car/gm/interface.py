@@ -83,7 +83,7 @@ class CarInterface(CarInterfaceBase):
     # ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.2], [0.00]]
     # ret.lateralTuning.pid.kf = 0.00004   # full torque for 20 deg at 80mph means 0.00007818594
     ret.steerRateCost = 0.4475 #높일수록 덜돌림
-    ret.steerActuatorDelay = 0.225  # Default delay, not measured yet #높일수록 미리 꺾음
+    ret.steerActuatorDelay = 0.25  # Default delay, not measured yet #높일수록 미리 꺾음
 
 
     if candidate == CAR.BOLT:
@@ -95,12 +95,12 @@ class CarInterface(CarInterfaceBase):
       ret.steerRatio = 12.25
       ret.steerRatioRear = 0.
       ret.centerToFront = ret.wheelbase * 0.4 # wild guess
-      ret.steerMaxV = [1.2775] #단위 조향시, 최대 조향벡터(각)이 아닐까.
+      ret.steerMaxV = [1.35] #단위 조향시, 최대 조향벡터(각)이 아닐까.
 
 
       ret.lateralTuning.init('lqr')
 
-      ret.lateralTuning.lqr.scale = 1725.0 #얼마나 빨리 꺽느냐를 결정
+      ret.lateralTuning.lqr.scale = 1700.0 #얼마나 빨리 꺽느냐를 결정
       ret.lateralTuning.lqr.ki = 0.006
 
       ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
