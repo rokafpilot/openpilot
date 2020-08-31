@@ -414,7 +414,11 @@ void handle_message(UIState *s, Message * msg) {
     struct cereal_ControlsState_LateralLQRState ldata;
     cereal_read_ControlsState_LateralLQRState(&ldata, datad.lateralControlState.lqrState);
 //  getting lateral Pid datas for dev ui
-
+//      s->scene.pid_p = pdata.p;
+//      s->scene.pid_i = pdata.i;
+//      s->scene.pid_f = pdata.f;
+//      s->scene.pid_d = pdata.d;
+//      s->scene.pid_output = pdata.output;
 //  getting lateral Lqr datas for dev ui
     s->scene.lqr_lqrOutput = ldata.lqrOutput;
     s->scene.lqr_i = ldata.i;
@@ -442,8 +446,8 @@ void handle_message(UIState *s, Message * msg) {
 
 //  getting steering related data for dev ui
     s->scene.angleSteersDes = datad.angleSteersDes;
-    s->scene.pCurvature = datad.pCurvature;
-    s->scene.curvMaxSpeed = datad.curvMaxSpeed;
+//    s->scene.pCurvature = datad.pCurvature;
+//    s->scene.curvMaxSpeed = datad.curvMaxSpeed;
 
     if (datad.alertSound != cereal_CarControl_HUDControl_AudibleAlert_none && datad.alertSound != s->alert_sound) {
       if (s->alert_sound != cereal_CarControl_HUDControl_AudibleAlert_none) {
