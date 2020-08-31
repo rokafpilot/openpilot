@@ -414,11 +414,7 @@ void handle_message(UIState *s, Message * msg) {
     struct cereal_ControlsState_LateralLQRState ldata;
     cereal_read_ControlsState_LateralLQRState(&ldata, datad.lateralControlState.lqrState);
 //  getting lateral Pid datas for dev ui
-    s->scene.pid_p = pdata.p;
-    s->scene.pid_i = pdata.i;
-    s->scene.pid_f = pdata.f;
-    s->scene.pid_d = pdata.d;
-    s->scene.pid_output = pdata.output;
+
 //  getting lateral Lqr datas for dev ui
     s->scene.lqr_lqrOutput = ldata.lqrOutput;
     s->scene.lqr_i = ldata.i;

@@ -200,7 +200,7 @@ typedef struct UIScene {
   float lqr_saturated;
   float lqr_output;
 
-  cereal::ControlsState::LateralINDIState::Reader indi;
+
   cereal::ControlsState::LateralLQRState::Reader lqr;
 
 } UIScene;
