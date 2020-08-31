@@ -47,6 +47,9 @@ def calc_d_poly(l_poly, r_poly, p_poly, l_prob, r_prob, lane_width, v_ego):
 
   lr_prob = l_prob + r_prob - l_prob * r_prob
 
+  if lr_prob > 0.70 :
+    lr_prob = max(0.95,lr_prob)
+
   d_poly_lane = (l_prob * path_from_left_lane + r_prob * path_from_right_lane) / (l_prob + r_prob + 0.0001)
   return lr_prob * d_poly_lane + (1.0 - lr_prob) * p_poly
 
@@ -83,11 +86,7 @@ class LanePlanner():
     self.l_prob = md.leftLane.prob  # left line prob
     self.r_prob = md.rightLane.prob  # right line prob
 
-    if self.l_prob < 0.5 :
-      self.l_prob = self.l_prob * 1.125
 
-    if self.r_prob < 0.5 :
-      self.r_prob = self.r_prob * 1.125
 
 
     if len(md.meta.desireState):

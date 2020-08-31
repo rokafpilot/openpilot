@@ -648,7 +648,7 @@ static void ui_draw_vision_speed(UIState *s) {
   nvgFillColor(s->vg, COLOR_WHITE_ALPHA(200));
 
   if (s->is_metric) {
-    nvgText(s->vg, viz_speed_x+viz_speed_w/2, 320, "kph", NULL);
+    nvgText(s->vg, viz_speed_x+viz_speed_w/2, 320, "km/h", NULL);
   } else {
     nvgText(s->vg, viz_speed_x+viz_speed_w/2, 320, "mph", NULL);
   }
@@ -962,7 +962,7 @@ static void ui_draw_vision_brake(UIState *s) {
   const int brake_img_x = (brake_x - (brake_img_size / 2));
   const int brake_img_y = (brake_y - (brake_size / 4) + 25);
 
-  bool brake_valid = scene->brakeLights;
+  bool brake_valid = scene->brakeLights || scene->brakePressed ||scene->regenPressed;
   float brake_img_alpha = brake_valid ? 1.0f : 0.15f;
   float brake_bg_alpha = brake_valid ? 0.3f : 0.1f;
   NVGcolor brake_bg = nvgRGBA(0, 0, 0, (255 * brake_bg_alpha));
@@ -994,7 +994,7 @@ static void ui_draw_vision_header(UIState *s) {
   nvgRect(s->vg, ui_viz_rx, box_y, ui_viz_rw, header_h);
   nvgFill(s->vg);
 
-  ui_draw_vision_maxspeed(s);
+//  ui_draw_vision_maxspeed(s);
 
 #ifdef SHOW_SPEEDLIMIT
   ui_draw_vision_speedlimit(s);
@@ -1527,7 +1527,7 @@ static void ui_draw_vision_footer(UIState *s) {
   nvgBeginPath(s->vg);
   nvgRect(s->vg, ui_viz_rx, footer_y, ui_viz_rw, footer_h);
 
-  ui_draw_vision_face(s);
+//  ui_draw_vision_face(s);
   ui_draw_vision_brake(s);
 
 
