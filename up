@@ -3,5 +3,6 @@
 rm -rf /data/ntune
 git pull
 scons
+sleep 5
 reboot
 
