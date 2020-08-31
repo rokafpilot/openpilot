@@ -6,7 +6,7 @@ import datetime
 import psutil
 from smbus2 import SMBus
 from cereal import log
-from common.android import ANDROID, get_network_type, get_network_strength
+from common.android import ANDROID, get_network_type, get_network_strength, get_ip_address
 from common.basedir import BASEDIR
 from common.params import Params, put_nonblocking
 from common.realtime import sec_since_boot, DT_TRML
@@ -28,8 +28,8 @@ NetworkType = log.ThermalData.NetworkType
 NetworkStrength = log.ThermalData.NetworkStrength
 CURRENT_TAU = 15.   # 15s time constant
 CPU_TEMP_TAU = 5.   # 5s time constant
-DAYS_NO_CONNECTIVITY_MAX = 7  # do not allow to engage after a week without internet
-DAYS_NO_CONNECTIVITY_PROMPT = 4  # send an offroad prompt after 4 days with no internet
+DAYS_NO_CONNECTIVITY_MAX = 9999  # do not allow to engage after a week without internet
+DAYS_NO_CONNECTIVITY_PROMPT = 9999  # send an offroad prompt after 4 days with no internet
 
 LEON = False
 last_eon_fan_val = None
@@ -194,6 +194,7 @@ def thermald_thread():
 
   network_type = NetworkType.none
   network_strength = NetworkStrength.unknown
+  wifiIpAddress = '--'
 
   current_filter = FirstOrderFilter(0., CURRENT_TAU, DT_TRML)
   cpu_temp_filter = FirstOrderFilter(0., CPU_TEMP_TAU, DT_TRML)
@@ -243,6 +244,7 @@ def thermald_thread():
       try:
         network_type = get_network_type()
         network_strength = get_network_strength(network_type)
+        wifiIpAddress = get_ip_address()
       except Exception:
         cloudlog.exception("Error getting network status")
 
@@ -251,6 +253,7 @@ def thermald_thread():
     msg.thermal.cpuPerc = int(round(psutil.cpu_percent()))
     msg.thermal.networkType = network_type
     msg.thermal.networkStrength = network_strength
+    msg.thermal.wifiIpAddress = get_ip_address()
     msg.thermal.batteryPercent = get_battery_capacity()
     msg.thermal.batteryStatus = get_battery_status()
     msg.thermal.batteryCurrent = get_battery_current()
@@ -304,7 +307,7 @@ def thermald_thread():
     now = datetime.datetime.utcnow()
 
     # show invalid date/time alert
-    time_valid = now.year >= 2019
+    time_valid = True
     if time_valid and not time_valid_prev:
       params.delete("Offroad_InvalidTime")
     if not time_valid and time_valid_prev:

@@ -23,7 +23,7 @@
 #include "common/framebuffer.h"
 #include "common/modeldata.h"
 #include "messaging.hpp"
-#include "cereal/gen/c/log.capnp.h"
+#include "cereal/gen/cpp/log.capnp.h"
 
 #include "sound.hpp"
 
@@ -169,16 +169,20 @@ typedef struct UIScene {
   bool gps_planner_active;
 
   // dev ui
+  // uint16_t maxCpuTemp;
+  // uint32_t maxBatTemp;
+
   float angleSteersDes;
   float pa0;
   float freeSpace;
   bool steerOverride;
   float output_scale;
-  
+
   int cpu0;
 
   uint8_t networkType;
   uint8_t networkStrength;
+  char wifiIpAddress[15];
   int batteryPercent;
   char batteryStatus[64];
   uint8_t thermalStatus;
@@ -186,6 +190,19 @@ typedef struct UIScene {
   int hwType;
   int satelliteCount;
   uint8_t athenaStatus;
+
+  float lp_steerRatio;
+  float lp_stiffnessFactor;
+  float lp_angleOffset;
+
+  float lqr_lqrOutput;
+  float lqr_i;
+  float lqr_saturated;
+  float lqr_output;
+
+  cereal::ControlsState::LateralINDIState::Reader indi;
+  cereal::ControlsState::LateralLQRState::Reader lqr;
+
 } UIScene;
 
 typedef struct {
