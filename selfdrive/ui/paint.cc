@@ -1443,7 +1443,7 @@ static void bb_ui_draw_L_Extra(UIState *s)
     const UIScene *scene = &s->scene;
 
     int w = 184;
-    int x = (s->scene.ui_viz_rx + (bdr_s*2)) + 190;
+    int x = (s->scene.ui_viz_rx + (bdr_s*2)) + 197;
     int y = 100;
     int xo = 180;
     int height = 70;
@@ -1510,12 +1510,12 @@ static void bb_ui_draw_L_Extra(UIState *s)
 //    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
     y += height;
-    snprintf(str, sizeof(str), "sRLP: %.3f", scene->lp_steerRatio);
+    snprintf(str, sizeof(str), "sR-LP: %.3f", scene->lp_steerRatio);
     ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-
-    y += height;
-    snprintf(str, sizeof(str), "sRCP: %.3f", scene->cp_steerRatio);
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+//
+//    y += height;
+//    snprintf(str, sizeof(str), "sRCP: %.3f", scene->cp_steerRatio);
+//    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
 }
 
