@@ -192,7 +192,6 @@ typedef struct UIScene {
   uint8_t athenaStatus;
 
   float lp_steerRatio;
-  float cp_steerRatio;
   float lp_stiffnessFactor;
   float lp_angleOffset;
 
@@ -263,8 +262,6 @@ typedef struct UIState {
   SubSocket *driverstate_sock;
   SubSocket *dmonitoring_sock;
   PubSocket *offroad_sock;
-    SubSocket *carparam_sock;
-    SubSocket *liveparam_sock;
 
 
   Poller * poller;

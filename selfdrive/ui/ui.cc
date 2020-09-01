@@ -238,8 +238,6 @@ static void ui_init(UIState *s) {
   s->driverstate_sock = SubSocket::create(s->ctx, "driverState");
   s->dmonitoring_sock = SubSocket::create(s->ctx, "dMonitoringState");
   s->offroad_sock = PubSocket::create(s->ctx, "offroadLayout");
-    s->carparam_sock = SubSocket::create(s->ctx, "carParams");
-    s->liveparam_sock = SubSocket::create(s->ctx, "liveParameters");
 
   assert(s->model_sock != NULL);
   assert(s->controlsstate_sock != NULL);
@@ -254,8 +252,6 @@ static void ui_init(UIState *s) {
   assert(s->driverstate_sock != NULL);
   assert(s->dmonitoring_sock != NULL);
   assert(s->offroad_sock != NULL);
-    assert(s->carparam_sock != NULL);
-    assert(s->liveparam_sock != NULL);
 
   s->poller = Poller::create({
                               s->model_sock,
@@ -269,9 +265,7 @@ static void ui_init(UIState *s) {
                               s->health_sock,
                               s->ubloxgnss_sock,
                               s->driverstate_sock,
-                              s->dmonitoring_sock,
-                              s->carparam_sock,
-                              s->liveparam_sock
+                              s->dmonitoring_sock
                              });
 
 
@@ -588,7 +582,6 @@ void handle_message(UIState *s, Message * msg) {
     s->scene.brakeLights = datad.brakeLights;
     s->scene.brakePressed = datad.brakePressed;
     s->scene.regenPressed = datad.regenPressed;
-
   } else if (eventd.which == cereal_Event_thermal) {
     struct cereal_ThermalData datad;
     cereal_read_ThermalData(&datad, eventd.thermal);
@@ -612,20 +605,14 @@ void handle_message(UIState *s, Message * msg) {
     s->scene.lp_angleOffset = datad.angleOffset;
     s->scene.lp_stiffnessFactor = datad.stiffnessFactor;
 
-  } else if (eventd.which == cereal_Event_carParams) {
-      struct cereal_CarParamsData datad;
-      cereal_read_CarParams(&datad, eventd.liveParameters);
-      s->scene.cp_steerRatio = datad.steerRatio;
-
-  }else if (eventd.which == cereal_Event_ubloxGnss) {
-          struct cereal_UbloxGnss datad;
-          cereal_read_UbloxGnss(&datad, eventd.ubloxGnss);
-          if (datad.which == cereal_UbloxGnss_measurementReport) {
-              struct cereal_UbloxGnss_MeasurementReport reportdatad;
-              cereal_read_UbloxGnss_MeasurementReport(&reportdatad, datad.measurementReport);
-              s->scene.satelliteCount = reportdatad.numMeas;
-          }
-      }
+  } else if (eventd.which == cereal_Event_ubloxGnss) {
+    struct cereal_UbloxGnss datad;
+    cereal_read_UbloxGnss(&datad, eventd.ubloxGnss);
+    if (datad.which == cereal_UbloxGnss_measurementReport) {
+      struct cereal_UbloxGnss_MeasurementReport reportdatad;
+      cereal_read_UbloxGnss_MeasurementReport(&reportdatad, datad.measurementReport);
+      s->scene.satelliteCount = reportdatad.numMeas;
+    }
   } else if (eventd.which == cereal_Event_health) {
     struct cereal_HealthData datad;
     cereal_read_HealthData(&datad, eventd.health);
