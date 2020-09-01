@@ -614,8 +614,8 @@ void handle_message(UIState *s, Message * msg) {
 
   } else if (eventd.which == cereal_Event_carParams) {
       struct cereal_CarData datad;
-      cereal_read_Car(&datad, eventd.liveParameters);
-//      s->scene.cp_steerRatio = datad.steerRatio;
+      cereal_read_Car(&datad, eventd.Car);
+
 
   }else if (eventd.which == cereal_Event_ubloxGnss) {
           struct cereal_UbloxGnss datad;
