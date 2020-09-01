@@ -613,8 +613,8 @@ void handle_message(UIState *s, Message * msg) {
     s->scene.lp_stiffnessFactor = datad.stiffnessFactor;
 
   } else if (eventd.which == cereal_Event_carParams) {
-      struct cereal_CarData datad;
-      cereal_read_Car(&datad, eventd.Car);
+      struct cereal_CarParams datad;
+      cereal_read_CarParams(&datad, eventd.carParams);
 
 
   }else if (eventd.which == cereal_Event_ubloxGnss) {
