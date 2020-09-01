@@ -438,7 +438,7 @@ void handle_message(UIState *s, Message * msg) {
     s->scene.v_ego = datad.vEgo;
     s->scene.angleSteers = datad.angleSteers;
     s->scene.steerOverride= datad.steerOverride;
-    s->scene.output_scale = pdata.output;
+//    s->scene.output_scale = pdata.output;
     s->scene.curvature = datad.curvature;
     s->scene.engaged = datad.enabled;
     s->scene.engageable = datad.engageable;
