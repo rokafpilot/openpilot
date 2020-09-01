@@ -153,8 +153,8 @@ class PathPlanner():
     #     self.sR_delay_counter = 0
     # else:
     #   self.steerRatio = self.sR[0]
-    #
-    # print("steerRatio = ", self.steerRatio)
+    self.steerRatio = VM.sR
+    print("steerRatio = ", self.steerRatio)
 
     self.LP.parse_model(sm['model'])
 
