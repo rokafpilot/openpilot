@@ -43,7 +43,7 @@ static void ui_draw_sidebar_battery_text(UIState *s) {
   const int battery_img_y = 273;
 
   char battery_str[7];
-  snprintf(battery_str, sizeof(battery_str), "%d%%%s", s->scene.batteryPercent, strcmp(s->scene.batteryStatus, "Charging") == 0 ? "+" : "-"));
+  snprintf(battery_str, sizeof(battery_str), "%d%%%s", s->scene.batteryPercent, strcmp(s->scene.batteryStatus, "Charging") == 0 ? "+" : "-");
   nvgFillColor(s->vg, COLOR_WHITE);
   nvgFontSize(s->vg, 44);
   nvgFontFaceId(s->vg, s->font_sans_regular);
