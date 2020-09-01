@@ -615,6 +615,7 @@ void handle_message(UIState *s, Message * msg) {
   } else if (eventd.which == cereal_Event_carParams) {
       struct cereal_CarParams datad;
       cereal_read_CarParams(&datad, eventd.carParams);
+  }
 
 
   }else if (eventd.which == cereal_Event_ubloxGnss) {
