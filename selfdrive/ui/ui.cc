@@ -615,10 +615,7 @@ void handle_message(UIState *s, Message * msg) {
   } else if (eventd.which == cereal_Event_carParams) {
       struct cereal_CarParams datad;
       cereal_read_CarParams(&datad, eventd.carParams);
-  }
-
-
-  }else if (eventd.which == cereal_Event_ubloxGnss) {
+  } else if (eventd.which == cereal_Event_ubloxGnss) {
           struct cereal_UbloxGnss datad;
           cereal_read_UbloxGnss(&datad, eventd.ubloxGnss);
           if (datad.which == cereal_UbloxGnss_measurementReport) {
@@ -626,7 +623,8 @@ void handle_message(UIState *s, Message * msg) {
               cereal_read_UbloxGnss_MeasurementReport(&reportdatad, datad.measurementReport);
               s->scene.satelliteCount = reportdatad.numMeas;
           }
-      }
+
+
   } else if (eventd.which == cereal_Event_health) {
     struct cereal_HealthData datad;
     cereal_read_HealthData(&datad, eventd.health);
