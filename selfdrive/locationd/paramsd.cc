@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
   // Main loop
   int save_counter = 0;
   while (true){
-  printf("%s","SR learning in progres..");
+//  printf("%s","SR learning in progres..");
     for (auto s : poller->poll(100)){
       Message * msg = s->receive();
 
