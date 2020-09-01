@@ -5,16 +5,14 @@
 #include <assert.h>
 #include <sys/mman.h>
 #include <sys/resource.h>
-
+#include <capnp/serialize.h>
 #include <czmq.h>
-
 #include "common/util.h"
 #include "common/timing.h"
 #include "common/swaglog.h"
 #include "common/touch.h"
 #include "common/visionimg.h"
 #include "common/params.h"
-
 #include "ui.hpp"
 #include "sound.hpp"
 #include "dashcam.h"
@@ -240,6 +238,8 @@ static void ui_init(UIState *s) {
   s->driverstate_sock = SubSocket::create(s->ctx, "driverState");
   s->dmonitoring_sock = SubSocket::create(s->ctx, "dMonitoringState");
   s->offroad_sock = PubSocket::create(s->ctx, "offroadLayout");
+    s->carparam_sock = SubSocket::create(s->ctx, "carParams");
+    s->liveparam_sock = SubSocket::create(s->ctx, "liveParameters");
 
   assert(s->model_sock != NULL);
   assert(s->controlsstate_sock != NULL);
@@ -254,6 +254,8 @@ static void ui_init(UIState *s) {
   assert(s->driverstate_sock != NULL);
   assert(s->dmonitoring_sock != NULL);
   assert(s->offroad_sock != NULL);
+    assert(s->carparam_sock != NULL);
+    assert(s->liveparam_sock != NULL);
 
   s->poller = Poller::create({
                               s->model_sock,
@@ -267,7 +269,9 @@ static void ui_init(UIState *s) {
                               s->health_sock,
                               s->ubloxgnss_sock,
                               s->driverstate_sock,
-                              s->dmonitoring_sock
+                              s->dmonitoring_sock,
+                              s->carparam_sock,
+                              s->liveparam_sock
                              });
 
 
@@ -405,12 +409,29 @@ void handle_message(UIState *s, Message * msg) {
   struct cereal_Event eventd;
   cereal_read_Event(&eventd, eventp);
 
+//    s->scene.lp_steerRatio = -0.1;
+
   if (eventd.which == cereal_Event_controlsState && s->started) {
     struct cereal_ControlsState datad;
     cereal_read_ControlsState(&datad, eventd.controlsState);
 
-    struct cereal_ControlsState_LateralPIDState pdata;
-    cereal_read_ControlsState_LateralPIDState(&pdata, datad.lateralControlState.pidState);
+//    struct cereal_ControlsState_LateralPIDState pdata;
+//    cereal_read_ControlsState_LateralPIDState(&pdata, datad.lateralControlState.pidState);
+//    struct cereal_ControlsState_LateralINDIState idata;
+//    cereal_read_ControlsState_LateralINDIState(&idata, datad.lateralControlState.indiState);
+    struct cereal_ControlsState_LateralLQRState ldata;
+    cereal_read_ControlsState_LateralLQRState(&ldata, datad.lateralControlState.lqrState);
+//  getting lateral Pid datas for dev ui
+//      s->scene.pid_p = pdata.p;
+//      s->scene.pid_i = pdata.i;
+//      s->scene.pid_f = pdata.f;
+//      s->scene.pid_d = pdata.d;
+//      s->scene.pid_output = pdata.output;
+//  getting lateral Lqr datas for dev ui
+    s->scene.lqr_lqrOutput = ldata.lqrOutput;
+    s->scene.lqr_i = ldata.i;
+    s->scene.lqr_saturated = ldata.saturated;
+    s->scene.lqr_output = ldata.output;
 
     s->controls_timeout = 1 * UI_FREQ;
     s->scene.frontview = datad.rearViewCam;
@@ -423,17 +444,18 @@ void handle_message(UIState *s, Message * msg) {
     s->scene.v_ego = datad.vEgo;
     s->scene.angleSteers = datad.angleSteers;
     s->scene.steerOverride= datad.steerOverride;
-    s->scene.output_scale = pdata.output;
+//    s->scene.output_scale = pdata.output;
     s->scene.curvature = datad.curvature;
     s->scene.engaged = datad.enabled;
     s->scene.engageable = datad.engageable;
     s->scene.gps_planner_active = datad.gpsPlannerActive;
     s->scene.monitoring_active = datad.driverMonitoringOn;
-
     s->scene.decel_for_model = datad.decelForModel;
 
-    // getting steering related data for dev ui
+//  getting steering related data for dev ui
     s->scene.angleSteersDes = datad.angleSteersDes;
+//    s->scene.pCurvature = datad.pCurvature;
+//    s->scene.curvMaxSpeed = datad.curvMaxSpeed;
 
     if (datad.alertSound != cereal_CarControl_HUDControl_AudibleAlert_none && datad.alertSound != s->alert_sound) {
       if (s->alert_sound != cereal_CarControl_HUDControl_AudibleAlert_none) {
@@ -566,6 +588,7 @@ void handle_message(UIState *s, Message * msg) {
     s->scene.brakeLights = datad.brakeLights;
     s->scene.brakePressed = datad.brakePressed;
     s->scene.regenPressed = datad.regenPressed;
+
   } else if (eventd.which == cereal_Event_thermal) {
     struct cereal_ThermalData datad;
     cereal_read_ThermalData(&datad, eventd.thermal);
@@ -574,20 +597,36 @@ void handle_message(UIState *s, Message * msg) {
     s->scene.networkStrength = datad.networkStrength;
     s->scene.batteryPercent = datad.batteryPercent;
     snprintf(s->scene.batteryStatus, sizeof(s->scene.batteryStatus), "%s", datad.batteryStatus.str);
+    snprintf(s->scene.wifiIpAddress, sizeof(s->scene.wifiIpAddress), "%s", datad.wifiIpAddress.str);
     s->scene.freeSpace = datad.freeSpace;
     s->scene.thermalStatus = datad.thermalStatus;
     s->scene.paTemp = datad.pa0;
 
     s->thermal_started = datad.started;
 
+  } else if (eventd.which == cereal_Event_liveParameters) {
+    struct cereal_LiveParametersData datad;
+    cereal_read_LiveParametersData(&datad, eventd.liveParameters);
+
+    s->scene.lp_steerRatio = datad.steerRatio;
+    s->scene.lp_angleOffset = datad.angleOffset;
+    s->scene.lp_stiffnessFactor = datad.stiffnessFactor;
+
+  } else if (eventd.which == cereal_Event_carParams) {
+      struct cereal_CarParams datad;
+      cereal_read_CarParams(&datad, eventd.carParams);
+      s->scene.cp_steerRatio = datad.steerRatio;
+
   } else if (eventd.which == cereal_Event_ubloxGnss) {
-    struct cereal_UbloxGnss datad;
-    cereal_read_UbloxGnss(&datad, eventd.ubloxGnss);
-    if (datad.which == cereal_UbloxGnss_measurementReport) {
-      struct cereal_UbloxGnss_MeasurementReport reportdatad;
-      cereal_read_UbloxGnss_MeasurementReport(&reportdatad, datad.measurementReport);
-      s->scene.satelliteCount = reportdatad.numMeas;
-    }
+          struct cereal_UbloxGnss datad;
+          cereal_read_UbloxGnss(&datad, eventd.ubloxGnss);
+          if (datad.which == cereal_UbloxGnss_measurementReport) {
+              struct cereal_UbloxGnss_MeasurementReport reportdatad;
+              cereal_read_UbloxGnss_MeasurementReport(&reportdatad, datad.measurementReport);
+              s->scene.satelliteCount = reportdatad.numMeas;
+          }
+
+
   } else if (eventd.which == cereal_Event_health) {
     struct cereal_HealthData datad;
     cereal_read_HealthData(&datad, eventd.health);

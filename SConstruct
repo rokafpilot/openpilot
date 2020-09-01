@@ -12,7 +12,7 @@ AddOption('--asan',
           help='turn on ASAN')
 
 SetOption('num_jobs', 4)
-SetOption('implicit_cache', 1)
+
 
 Decider('timestamp-newer')
 

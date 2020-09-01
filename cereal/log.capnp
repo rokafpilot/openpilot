@@ -283,6 +283,7 @@ struct ThermalData {
   networkType @22 :NetworkType;
   offroadPowerUsage @23 :UInt32;  # Power usage since going offroad in uWh
   networkStrength @24 :NetworkStrength;
+  wifiIpAddress @25 :Text;
 
   fanSpeed @10 :UInt16;
   started @11 :Bool;
@@ -527,6 +528,9 @@ struct ControlsState @0x97ff69c53601abf1 {
   decelForModel @54 :Bool;
   canErrorCounter @57 :UInt32;
 
+  pCurvature @58 :Float32;
+  curvMaxSpeed @59 :Float32;
+
   lateralControlState :union {
     indiState @52 :LateralINDIState;
     pidState @53 :LateralPIDState;
@@ -582,6 +586,7 @@ struct ControlsState @0x97ff69c53601abf1 {
     p @4 :Float32;
     i @5 :Float32;
     f @6 :Float32;
+    d @9 :Float32;
     output @7 :Float32;
     saturated @8 :Bool;
    }

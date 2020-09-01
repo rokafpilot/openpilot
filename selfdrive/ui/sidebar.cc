@@ -37,22 +37,18 @@ static void ui_draw_sidebar_network_strength(UIState *s) {
   ui_draw_image(s->vg, network_img_x, network_img_y, network_img_w, network_img_h, network_img, 1.0f);
 }
 
-static void ui_draw_sidebar_battery_icon(UIState *s) {
-  const int battery_img_h = 36;
-  const int battery_img_w = 76;
-  const int battery_img_x = !s->scene.uilayout_sidebarcollapsed ? 160 : -(sbr_w);
-  const int battery_img_y = 255;
+static void ui_draw_sidebar_battery_text(UIState *s) {
+  const int battery_img_w = 100;
+  const int battery_img_x = !s->scene.uilayout_sidebarcollapsed ? 150 : -(sbr_w);
+  const int battery_img_y = 273;
 
-  int battery_img = strcmp(s->scene.batteryStatus, "Charging") == 0 ?
-    s->img_battery_charging : s->img_battery;
-
-  nvgBeginPath(s->vg);
-  nvgRect(s->vg, battery_img_x + 6, battery_img_y + 5,
-    ((battery_img_w - 19) * (s->scene.batteryPercent * 0.01)), battery_img_h - 11);
+  char battery_str[7];
+  snprintf(battery_str, sizeof(battery_str), "%d%%%s", s->scene.batteryPercent, s->scene.batteryStatus == "Charging" ? "+" : "-");
   nvgFillColor(s->vg, COLOR_WHITE);
-  nvgFill(s->vg);
-
-  ui_draw_image(s->vg, battery_img_x, battery_img_y, battery_img_w, battery_img_h, battery_img, 1.0f);
+  nvgFontSize(s->vg, 44);
+  nvgFontFaceId(s->vg, s->font_sans_regular);
+  nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+  nvgTextBox(s->vg, battery_img_x, battery_img_y, battery_img_w, battery_str, NULL);
 }
 
 static void ui_draw_sidebar_network_type(UIState *s) {
@@ -61,8 +57,16 @@ static void ui_draw_sidebar_network_type(UIState *s) {
   const int network_w = 100;
   const int network_h = 100;
   const char *network_types[6] = {"--", "WiFi", "2G", "3G", "4G", "5G"};
-  char network_type_str[32];
+  
+  char wifiIpAddress_str[15];
+  snprintf(wifiIpAddress_str, sizeof(wifiIpAddress_str), "%s", s->scene.wifiIpAddress);
+  nvgFillColor(s->vg, COLOR_WHITE);
+  nvgFontSize(s->vg, 40);
+  nvgFontFaceId(s->vg, s->font_sans_regular);
+  nvgTextAlign(s->vg, NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE);
+  nvgTextBox(s->vg, network_x, network_y + 50, 250, wifiIpAddress_str, NULL);
 
+  char network_type_str[32];
   if (s->scene.networkType <= 5) {
     snprintf(network_type_str, sizeof(network_type_str), "%s", network_types[s->scene.networkType]);
   }
@@ -78,7 +82,7 @@ static void ui_draw_sidebar_metric(UIState *s, const char* label_str, const char
   const int metric_x = !s->scene.uilayout_sidebarcollapsed ? 30 : -(sbr_w);
   const int metric_y = 338 + y_offset;
   const int metric_w = 240;
-  const int metric_h = message_str ? strchr(message_str, '\n') ? 124 : 100 : 148;
+  const int metric_h = message_str ? strchr(message_str, '\n') ? 130 : 100 : 135;
 
   NVGcolor status_color;
 
@@ -106,13 +110,13 @@ static void ui_draw_sidebar_metric(UIState *s, const char* label_str, const char
     nvgFontSize(s->vg, 78);
     nvgFontFaceId(s->vg, s->font_sans_bold);
     nvgTextAlign(s->vg, NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE);
-    nvgTextBox(s->vg, metric_x + 50, metric_y + 50, metric_w - 60, value_str, NULL);
+    nvgTextBox(s->vg, metric_x + 50, metric_y + 35, metric_w - 60, value_str, NULL);
 
     nvgFillColor(s->vg, COLOR_WHITE);
     nvgFontSize(s->vg, 48);
     nvgFontFaceId(s->vg, s->font_sans_regular);
     nvgTextAlign(s->vg, NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE);
-    nvgTextBox(s->vg, metric_x + 50, metric_y + 50 + 66, metric_w - 60, label_str, NULL);
+    nvgTextBox(s->vg, metric_x + 50, metric_y + 30 + 66, metric_w - 60, label_str, NULL);
   } else {
     nvgFillColor(s->vg, COLOR_WHITE);
     nvgFontSize(s->vg, 48);
@@ -127,7 +131,7 @@ static void ui_draw_sidebar_temp_metric(UIState *s) {
   char temp_label_str[32];
   char temp_value_str[32];
   char temp_value_unit[32];
-  const int temp_y_offset = 0;
+  const int temp_y_offset = 20;
 
   if (s->scene.thermalStatus == cereal_ThermalData_ThermalStatus_green) {
     temp_severity = 0;
@@ -192,7 +196,7 @@ void ui_draw_sidebar(UIState *s) {
   ui_draw_sidebar_settings_button(s);
   ui_draw_sidebar_home_button(s);
   ui_draw_sidebar_network_strength(s);
-  ui_draw_sidebar_battery_icon(s);
+  ui_draw_sidebar_battery_text(s);
   ui_draw_sidebar_network_type(s);
   ui_draw_sidebar_temp_metric(s);
   ui_draw_sidebar_panda_metric(s);

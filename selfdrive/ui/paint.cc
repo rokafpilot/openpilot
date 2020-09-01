@@ -65,6 +65,13 @@ static float lerp(float v0, float v1, float t) {
   return (1 - t) * v0 + t * v1;
 }
 
+static void ui_draw_text(NVGcontext *vg, float x, float y, const char* string, float size, NVGcolor color, int font){
+  nvgFontFaceId(vg, font);
+  nvgFontSize(vg, size);
+  nvgFillColor(vg, color);
+  nvgText(vg, x, y, string, NULL);
+}
+
 static void draw_chevron(UIState *s, float x_in, float y_in, float sz,
                           NVGcolor fillColor, NVGcolor glowColor) {
   const UIScene *scene = &s->scene;
@@ -784,8 +791,16 @@ static void ui_draw_vision_event(UIState *s) {
   const int viz_event_h = (header_h - (bdr_is*1.5));
   if (s->scene.decel_for_model && s->scene.engaged) {
     // draw winding road sign
-    const int img_turn_size = 160*1.5;
-    ui_draw_image(s->vg, viz_event_x - (img_turn_size / 4), viz_event_y + bdr_s - 25, img_turn_size, img_turn_size, s->img_turn, 1.0f);
+    const int img_turn_size = 160;
+    const int img_turn_x = viz_event_x-(img_turn_size/4)+80;
+    const int img_turn_y = viz_event_y+bdr_s-25;
+    float img_turn_alpha = 1.0f;
+    nvgBeginPath(s->vg);
+    NVGpaint imgPaint = nvgImagePattern(s->vg, img_turn_x, img_turn_y,
+      img_turn_size, img_turn_size, 0, s->img_turn, img_turn_alpha);
+    nvgRect(s->vg, img_turn_x, img_turn_y, img_turn_size, img_turn_size);
+    nvgFillPaint(s->vg, imgPaint);
+    nvgFill(s->vg);
   } else {
     // draw steering wheel
     const int bg_wheel_size = 96;
@@ -796,7 +811,7 @@ static void ui_draw_vision_event(UIState *s) {
     const int img_wheel_y = bg_wheel_y-25;
     const float img_rotation = s->scene.angleSteers/180*3.141592;
     float img_wheel_alpha = 0.1f;
-    bool is_engaged = (s->status == STATUS_ENGAGED);
+    bool is_engaged = (s->status == STATUS_ENGAGED) && !scene->steerOverride;
     bool is_warning = (s->status == STATUS_WARNING);
     bool is_engageable = scene->engageable;
     if (is_engaged || is_warning || is_engageable) {
@@ -812,7 +827,16 @@ static void ui_draw_vision_event(UIState *s) {
       nvgFill(s->vg);
       img_wheel_alpha = 1.0f;
     }
-    ui_draw_image(s->vg, img_wheel_x, img_wheel_y, img_wheel_size, img_wheel_size, s->img_wheel, img_wheel_alpha);
+    nvgSave(s->vg);
+    nvgTranslate(s->vg,bg_wheel_x,(bg_wheel_y + (bdr_s*1.5)));
+    nvgRotate(s->vg,-img_rotation);
+    nvgBeginPath(s->vg);
+    NVGpaint imgPaint = nvgImagePattern(s->vg, img_wheel_x-bg_wheel_x, img_wheel_y-(bg_wheel_y + (bdr_s*1.5)),
+	img_wheel_size, img_wheel_size, 0, s->img_wheel, img_wheel_alpha);
+    nvgRect(s->vg, img_wheel_x-bg_wheel_x, img_wheel_y-(bg_wheel_y + (bdr_s*1.5)), img_wheel_size, img_wheel_size);
+    nvgFillPaint(s->vg, imgPaint);
+    nvgFill(s->vg);
+    nvgRestore(s->vg);
   }
 }
 
@@ -851,7 +875,7 @@ static void ui_draw_vision_face(UIState *s) {
   NVGcolor face_bg = nvgRGBA(0, 0, 0, (255 * face_bg_alpha));
 
   nvgBeginPath(s->vg);
-  nvgCircle(s->vg, face_x, (face_y + (bdr_s * 1.5)), face_size);
+  nvgCircle(s->vg, face_x, (face_y + (bdr_s * 1.5) + 70), face_size);
   nvgFillColor(s->vg, face_bg);
   nvgFill(s->vg);
 
@@ -1414,6 +1438,88 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     nvgStroke(s->vg);
 }
 
+static void bb_ui_draw_L_Extra(UIState *s)
+{
+    const UIScene *scene = &s->scene;
+
+    int w = 184;
+    int x = (s->scene.ui_viz_rx + (bdr_s*2)) + 190;
+    int y = 100;
+    int xo = 180;
+    int height = 70;
+
+    nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
+    const int text_x = x + (xo / 2) + (w / 2);
+
+    char str[256];
+
+    /*snprintf(str, sizeof(str), "P: %.5f", scene->pid_p);
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+    y += height;
+    snprintf(str, sizeof(str), "I: %.5f", scene->pid_i);
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+    y += height;
+    snprintf(str, sizeof(str), "F: %.5f", scene->pid_f);
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+    y += height;
+    snprintf(str, sizeof(str), "D: %.5f", scene->pid_d);
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+    y += height;
+    snprintf(str, sizeof(str), "O: %.5f", scene->pid_output);
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);*/
+
+
+    /*snprintf(str, sizeof(str), "RS: %.5f", scene->indi.getRateSetPoint());
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+    y += height;
+    snprintf(str, sizeof(str), "AS: %.5f", scene->indi.getAccelSetPoint());
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+    y += height;
+    snprintf(str, sizeof(str), "AE: %.5f", scene->indi.getAccelError());
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+    y += height;
+    snprintf(str, sizeof(str), "DO: %.5f", scene->indi.getDelayedOutput());
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+    y += height;
+    snprintf(str, sizeof(str), "D: %.5f", scene->indi.getDelta());
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+    y += height;
+    snprintf(str, sizeof(str), "O: %.5f", scene->indi.getOutput());
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);*/
+
+    ///////////
+    // LQR
+
+    snprintf(str, sizeof(str), "I: %.3f", scene->lqr_i);
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+
+    y += height;
+    snprintf(str, sizeof(str), "LQR: %.3f", scene->lqr_lqrOutput);
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+
+    y += height;
+    snprintf(str, sizeof(str), "O: %.3f", scene->lqr_output);
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+
+    y += height;
+    snprintf(str, sizeof(str), "Sat: %d", scene->lqr_saturated ? 1 : 0);
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+
+//    y += height;
+//    snprintf(str, sizeof(str), "CURV: %.3f", scene->pCurvature * 1000.);
+//    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+
+    y += height;
+    snprintf(str, sizeof(str), "sRLP: %.3f", scene->lp_steerRatio);
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+
+    y += height;
+    snprintf(str, sizeof(str), "sRCP: %.3f", scene->cp_steerRatio);
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+
+}
+
+
 static void bb_ui_draw_UI(UIState *s)
 {
   const UIScene *scene = &s->scene;
@@ -1427,6 +1533,7 @@ static void bb_ui_draw_UI(UIState *s)
 
   bb_ui_draw_measures_right(s, bb_dml_x, bb_dml_y, bb_dml_w);
   bb_ui_draw_measures_left(s, bb_dmr_x, bb_dmr_y, bb_dmr_w);
+  bb_ui_draw_L_Extra(s);
   
     /* 
     //Code for logging (should be moved to another file?)
@@ -1532,7 +1639,7 @@ static void ui_draw_vision_footer(UIState *s) {
 
 
 #ifdef SHOW_SPEEDLIMIT
-  //ui_draw_vision_map(s);
+  ui_draw_vision_map(s);
 #endif
   bb_ui_draw_UI(s);
 
