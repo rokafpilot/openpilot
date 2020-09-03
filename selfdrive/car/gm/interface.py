@@ -92,16 +92,16 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1616. + STD_CARGO_KG
       ret.safetyModel = car.CarParams.SafetyModel.gm
       ret.wheelbase = 2.60096
-      ret.steerRatio = 15.25
+      ret.steerRatio = 14.25
       ret.steerRatioRear = 0.
       ret.centerToFront = ret.wheelbase * 0.4 # wild guess
-      ret.steerMaxV = [1.400] #단위 조향시, 최대 조향벡터(각)이 아닐까.
+      ret.steerMaxV = [1.300] #단위 조향시, 최대 조향벡터(각)이 아닐까.
 
 
       ret.lateralTuning.init('lqr')
 
       ret.lateralTuning.lqr.scale = 1700.0 #얼마나 빨리 꺽느냐를 결정
-      ret.lateralTuning.lqr.ki = 0.006
+      ret.lateralTuning.lqr.ki = 0.0055
 
       ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
       ret.lateralTuning.lqr.b = [-1.92006585e-04, 3.95603032e-05]

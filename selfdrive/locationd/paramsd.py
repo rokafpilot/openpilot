@@ -138,6 +138,7 @@ def main(sm=None, pm=None):
 
       x = learner.kf.x
       msg.liveParameters.steerRatio = float(x[States.STEER_RATIO])
+      #print("LR SteerRatio : " , str(msg.liveParameters.steerRatio) ,"\n")
       msg.liveParameters.stiffnessFactor = float(x[States.STIFFNESS])
       msg.liveParameters.angleOffsetAverage = math.degrees(x[States.ANGLE_OFFSET])
       msg.liveParameters.angleOffset = msg.liveParameters.angleOffsetAverage + math.degrees(x[States.ANGLE_OFFSET_FAST])
