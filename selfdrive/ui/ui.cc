@@ -598,9 +598,9 @@ void handle_message(UIState *s, Message * msg) {
   } else if (eventd.which == cereal_Event_pathPlan) {
       struct cereal_PathPlan datad;
       cereal_read_PathPlan(&datad, eventd.pathPlan);
-      s->scene.laneWidth = data.laneWidth;
-      s->scene.l_prob = data.lProb;
-      s->scene.r_prob = data.rProb;
+      s->scene.laneWidth = datad.laneWidth;
+      s->scene.l_prob = datad.lProb;
+      s->scene.r_prob = datad.rProb;
 
   } else if (eventd.which == cereal_Event_thermal) {
     struct cereal_ThermalData datad;
@@ -615,7 +615,7 @@ void handle_message(UIState *s, Message * msg) {
     s->scene.thermalStatus = datad.thermalStatus;
     s->scene.paTemp = datad.pa0;
 
-        s->scene.cpuTemp = (datad.getCpu0() + datad.cpu1 + datad.cpu2 + datad.cpy3) / 4;
+        s->scene.cpuTemp = (datad.getCpu0() + datad.cpu1 + datad.cpu2 + datad.cpu3) / 4;
         s->scene.cpuPerc = datad.cpuPerc;
         s->scene.maxBatTemp = datad.bat;
 
