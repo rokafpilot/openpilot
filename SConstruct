@@ -15,7 +15,7 @@ SetOption('num_jobs', 4)
 CacheDir('/data/build_cache')
 
 
-Decider('timestamp-newer')
+
 
 arch = subprocess.check_output(["uname", "-m"], encoding='utf8').rstrip()
 if platform.system() == "Darwin":
