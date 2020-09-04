@@ -593,14 +593,14 @@ void handle_message(UIState *s, Message * msg) {
     s->scene.brakeLights = datad.brakeLights;
     s->scene.brakePressed = datad.brakePressed;
     s->scene.regenPressed = datad.regenPressed;
-    s->scene.steeringTorqueEps = data.getSteeringTorqueEps();
+    s->scene.steeringTorqueEps = datad.getSteeringTorqueEps();
 
   } else if (eventd.which == cereal_Event_pathPlan) {
       struct cereal_PathPlan datad;
       cereal_read_PathPlan(&datad, eventd.pathPlan);
-      scene.laneWidth = data.getLaneWidth();
-      scene.l_prob = data.getLProb();
-      scene.r_prob = data.getRProb();
+      s->scene.laneWidth = data.getLaneWidth();
+      s->scene.l_prob = data.getLProb();
+      s->scene.r_prob = data.getRProb();
 
   } else if (eventd.which == cereal_Event_thermal) {
     struct cereal_ThermalData datad;
@@ -615,9 +615,9 @@ void handle_message(UIState *s, Message * msg) {
     s->scene.thermalStatus = datad.thermalStatus;
     s->scene.paTemp = datad.pa0;
 
-        s->scene.cpuTemp = (datad.getCpu0() + datad.getCpu1() + datad.getCpu2() + datad.getCpu3()) / 4;
-        s->scene.cpuPerc = datad.getCpuPerc();
-        s->scene.maxBatTemp = datad.getBat();
+        s->scene.cpuTemp = (datad.getCpu0() + datad.cpu1 + datad.cpu2 + datad.cpy3) / 4;
+        s->scene.cpuPerc = datad.cpuPerc;
+        s->scene.maxBatTemp = datad.bat;
 
     s->thermal_started = datad.started;
 
