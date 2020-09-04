@@ -615,7 +615,7 @@ void handle_message(UIState *s, Message * msg) {
     s->scene.thermalStatus = datad.thermalStatus;
     s->scene.paTemp = datad.pa0;
 
-        s->scene.cpuTemp = (datad.getCpu0() + datad.cpu1 + datad.cpu2 + datad.cpu3) / 4;
+        s->scene.cpuTemp = (datad.cpu0 + datad.cpu1 + datad.cpu2 + datad.cpu3) / 4;
         s->scene.cpuPerc = datad.cpuPerc;
         s->scene.maxBatTemp = datad.bat;
 
