@@ -597,7 +597,7 @@ void handle_message(UIState *s, Message * msg) {
 
   } else if (eventd.which == cereal_Event_pathPlan) {
       struct cereal_PathPlan datad;
-      cereal_read_CarState(&datad, eventd.pathPlan);
+      cereal_read_PathPlan(&datad, eventd.pathPlan);
       scene.laneWidth = data.getLaneWidth();
       scene.l_prob = data.getLProb();
       scene.r_prob = data.getRProb();
