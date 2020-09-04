@@ -1287,6 +1287,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     }
     close(fd);
 //   snprintf(battery_str, sizeof(battery_str), "%d%%%s", s->scene.batteryPercent, strcmp(s->scene.batteryStatus, "Charging") == 0 ? "+" : "-");
+    printf(%s,scene->batteryStatus);
     snprintf(val_str, sizeof(val_str), "%s%%%s", bat_lvl,strcmp(scene->batteryStatus, "Charging") == 0 ? "+" : "-");
     snprintf(uom_str, sizeof(uom_str), "");
     bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "BAT LVL",
