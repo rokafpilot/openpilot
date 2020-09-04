@@ -238,8 +238,10 @@ static void ui_init(UIState *s) {
   s->driverstate_sock = SubSocket::create(s->ctx, "driverState");
   s->dmonitoring_sock = SubSocket::create(s->ctx, "dMonitoringState");
   s->offroad_sock = PubSocket::create(s->ctx, "offroadLayout");
-    s->carparam_sock = SubSocket::create(s->ctx, "carParams");
+//    s->carparam_sock = SubSocket::create(s->ctx, "carParams");
     s->liveparam_sock = SubSocket::create(s->ctx, "liveParameters");
+    s->pathPlan_sock = SubSocket::create(s->ctx, "pathPlan");
+
 
   assert(s->model_sock != NULL);
   assert(s->controlsstate_sock != NULL);
@@ -254,8 +256,10 @@ static void ui_init(UIState *s) {
   assert(s->driverstate_sock != NULL);
   assert(s->dmonitoring_sock != NULL);
   assert(s->offroad_sock != NULL);
-    assert(s->carparam_sock != NULL);
+//    assert(s->carparam_sock != NULL);
     assert(s->liveparam_sock != NULL);
+    assert(s->pathPlan_sock != NULL);
+
 
   s->poller = Poller::create({
                               s->model_sock,
@@ -270,8 +274,9 @@ static void ui_init(UIState *s) {
                               s->ubloxgnss_sock,
                               s->driverstate_sock,
                               s->dmonitoring_sock,
-                              s->carparam_sock,
-                              s->liveparam_sock
+//                              s->carparam_sock,
+                              s->liveparam_sock,
+                              s->pathPlan_sock
                              });
 
 
@@ -588,6 +593,14 @@ void handle_message(UIState *s, Message * msg) {
     s->scene.brakeLights = datad.brakeLights;
     s->scene.brakePressed = datad.brakePressed;
     s->scene.regenPressed = datad.regenPressed;
+    s->scene.steeringTorqueEps = datad.steeringTorqueEps;
+
+  } else if (eventd.which == cereal_Event_pathPlan) {
+      struct cereal_PathPlan datad;
+      cereal_read_PathPlan(&datad, eventd.pathPlan);
+      s->scene.laneWidth = datad.laneWidth;
+      s->scene.l_prob = datad.lProb;
+      s->scene.r_prob = datad.rProb;
 
   } else if (eventd.which == cereal_Event_thermal) {
     struct cereal_ThermalData datad;
@@ -601,6 +614,10 @@ void handle_message(UIState *s, Message * msg) {
     s->scene.freeSpace = datad.freeSpace;
     s->scene.thermalStatus = datad.thermalStatus;
     s->scene.paTemp = datad.pa0;
+
+        s->scene.cpuTemp = (datad.cpu0 + datad.cpu1 + datad.cpu2 + datad.cpu3) / 4;
+        s->scene.cpuPerc = datad.cpuPerc;
+        s->scene.maxBatTemp = datad.bat;
 
     s->thermal_started = datad.started;
 
@@ -1121,10 +1138,18 @@ int main(int argc, char* argv[]) {
 
     // Don't waste resources on drawing in case screen is off
     if (s->awake) {
-      dashcam(s, touch_x, touch_y);
+        if(dashcam(s, touch_x, touch_y)) {
+          touched = 0;
+          set_awake(s, true);
+        }
       ui_draw(s);
       glFinish();
       should_swap = true;
+    }
+    if (touched == 1) {
+      set_awake(s, true);
+      handle_sidebar_touch(s, touch_x, touch_y);
+      handle_vision_touch(s, touch_x, touch_y);
     }
 
     if (s->volume_timeout > 0) {

@@ -83,7 +83,7 @@ const int home_btn_w = 180;
 const int home_btn_x = 60;
 const int home_btn_y = vwp_h - home_btn_h - 40;
 
-const int UI_FREQ = 30;   // Hz
+const int UI_FREQ = 20;   // Hz
 
 const int MODEL_PATH_MAX_VERTICES_CNT = 98;
 const int MODEL_LANE_PATH_CNT = 3;
@@ -128,7 +128,8 @@ typedef struct UIScene {
   bool brakeLights;
   bool brakePressed;
   bool regenPressed;
-
+  float pCurvature;
+  float curvMaxSpeed;
 
   float curvature;
   int engaged;
@@ -170,7 +171,9 @@ typedef struct UIScene {
 
   // dev ui
   // uint16_t maxCpuTemp;
-  // uint32_t maxBatTemp;
+   uint16_t cpuTemp;
+   uint16_t cpuPerc;
+   uint32_t maxBatTemp;
 
   float angleSteersDes;
   float pa0;
@@ -203,6 +206,8 @@ typedef struct UIScene {
 
 
   cereal::ControlsState::LateralLQRState::Reader lqr;
+    float laneWidth, l_prob, r_prob;
+    float steeringTorqueEps;
 
 } UIScene;
 
@@ -263,8 +268,9 @@ typedef struct UIState {
   SubSocket *driverstate_sock;
   SubSocket *dmonitoring_sock;
   PubSocket *offroad_sock;
-    SubSocket *carparam_sock;
-    SubSocket *liveparam_sock;
+  //SubSocket *carparam_sock;
+  SubSocket *liveparam_sock;
+  SubSocket *pathPlan_sock;
 
 
   Poller * poller;

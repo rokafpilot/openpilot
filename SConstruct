@@ -12,9 +12,10 @@ AddOption('--asan',
           help='turn on ASAN')
 
 SetOption('num_jobs', 4)
+CacheDir('/data/build_cache')
 
 
-Decider('timestamp-newer')
+
 
 arch = subprocess.check_output(["uname", "-m"], encoding='utf8').rstrip()
 if platform.system() == "Darwin":
@@ -173,8 +174,7 @@ env = Environment(
   ]
 )
 
-if os.environ.get('SCONS_CACHE'):
-  CacheDir('/tmp/scons_cache')
+
 
 node_interval = 5
 node_count = 0
