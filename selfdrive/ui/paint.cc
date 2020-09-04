@@ -645,9 +645,10 @@ static void ui_draw_vision_speed(UIState *s) {
   ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 320, s->is_metric?"km/h":"mi/h", 36*2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
   // lane width
+  #iidef DEBUG_UI
   snprintf(speed_str, sizeof(speed_str), "%.1fm", scene->laneWidth);
   ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 960, speed_str, 70*2.5, COLOR_WHITE, s->font_sans_bold);
-  
+  ##endif
   
   /*
   //uptime
@@ -1346,7 +1347,10 @@ static void drawLeftDebug(UIState *s)
 
     ///////////
     // LQR
-
+    #ifndef DEBUG_UI
+    snprintf(str, sizeof(str), "sR: %.3f", scene->lp_steerRatio);
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+    ##else
     snprintf(str, sizeof(str), "I: %.3f", scene->lqr.getI());
     ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
@@ -1369,6 +1373,7 @@ static void drawLeftDebug(UIState *s)
     y += height;
     snprintf(str, sizeof(str), "Lane: %.2f, %.2f", scene->l_prob, scene->r_prob);
     ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+    #endif
 }
 
 
@@ -1421,9 +1426,9 @@ static void bb_ui_draw_UI(UIState *s)
       maxRPM = 0;
     }
     */
-    #if DEBUG_UI
-      drawLeftDebug(s);
-    #endif
+
+    drawLeftDebug(s);
+
 }
 //BB END: functions added for the display of various items
 
