@@ -170,7 +170,9 @@ typedef struct UIScene {
 
   // dev ui
   // uint16_t maxCpuTemp;
-  // uint32_t maxBatTemp;
+   uint16_t cpuTemp;
+   uint16_t cpuPerc;
+   uint32_t maxBatTemp;
 
   float angleSteersDes;
   float pa0;
@@ -203,6 +205,8 @@ typedef struct UIScene {
 
 
   cereal::ControlsState::LateralLQRState::Reader lqr;
+    float laneWidth, l_prob, r_prob;
+    float steeringTorqueEps;
 
 } UIScene;
 
@@ -263,8 +267,9 @@ typedef struct UIState {
   SubSocket *driverstate_sock;
   SubSocket *dmonitoring_sock;
   PubSocket *offroad_sock;
-    SubSocket *carparam_sock;
-    SubSocket *liveparam_sock;
+  //SubSocket *carparam_sock;
+  SubSocket *liveparam_sock;
+  SubSocket *pathPlan_sock;
 
 
   Poller * poller;

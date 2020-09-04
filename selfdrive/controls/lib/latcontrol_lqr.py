@@ -1,4 +1,3 @@
-from selfdrive.ntune import nTune
 import numpy as np
 from selfdrive.controls.lib.drive_helpers import get_steer_max
 from common.numpy_fast import clip, interp
@@ -8,7 +7,8 @@ from cereal import log
 
 class LatControlLQR():
   def __init__(self, CP):
-    self.scale = CP.lateralTuning.lqr.scale
+    self.scaleBP = CP.lateralTuning.lqr.scaleBP
+    self.scaleV = CP.lateralTuning.lqr.scaleV
     self.ki = CP.lateralTuning.lqr.ki
 
     self.A = np.array(CP.lateralTuning.lqr.a).reshape((2,2))
@@ -26,7 +26,7 @@ class LatControlLQR():
     self.sat_limit = CP.steerLimitTimer
 
     self.reset()
-    self.tune = nTune(CP, self)
+
 
   def reset(self):
     self.i_lqr = 0.0
@@ -46,9 +46,9 @@ class LatControlLQR():
     return self.sat_count > self.sat_limit
 
   def update(self, active, v_ego, angle_steers, angle_steers_rate, eps_torque, steer_override, rate_limited, CP, path_plan):
-    self.tune.check()
-    print("{",v_ego, angle_steers, CP.steerMaxBP, CP.steerMaxV, path_plan.angleSteers, path_plan.angleOffset, eps_torque,
-          steer_override, rate_limited, path_plan,"}")
+
+    # print("{",v_ego, angle_steers, CP.steerMaxBP, CP.steerMaxV, path_plan.angleSteers, path_plan.angleOffset, eps_torque,
+    #       steer_override, rate_limited, path_plan,"}")
     lqr_log = log.ControlsState.LateralLQRState.new_message()
 
 
@@ -76,7 +76,7 @@ class LatControlLQR():
 
       # LQR
       u_lqr = float(self.angle_steers_des / self.dc_gain - self.K.dot(self.x_hat))
-      lqr_output = torque_scale * u_lqr / self.scale
+      lqr_output = torque_scale * u_lqr / interp(v_ego, self.scaleBP, self.scaleV)
 
       # Integrator
       if steer_override:

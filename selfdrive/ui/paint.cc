@@ -8,7 +8,7 @@
 #include "ui.hpp"
 
 #include "common/util.h"
-
+#define DEBUG_UI 1
 #define NANOVG_GLES3_IMPLEMENTATION
 
 #include "nanovg_gl.h"
@@ -628,37 +628,25 @@ static void ui_draw_vision_speedlimit(UIState *s) {
 
 static void ui_draw_vision_speed(UIState *s) {
   const UIScene *scene = &s->scene;
-  int ui_viz_rx = scene->ui_viz_rx;
-  int ui_viz_rw = scene->ui_viz_rw;
-  float speed = s->scene.v_ego;
-
+  float speed = s->scene.v_ego * 2.2369363 + 0.5;
+  if (s->is_metric){
+    speed = s->scene.v_ego * 3.6 + 0.5;
+  }
   const int viz_speed_w = 280;
-  const int viz_speed_x = ui_viz_rx+((ui_viz_rw/2)-(viz_speed_w/2));
+  const int viz_speed_x = scene->ui_viz_rx+((scene->ui_viz_rw/2)-(viz_speed_w/2));
   char speed_str[32];
 
   nvgBeginPath(s->vg);
   nvgRect(s->vg, viz_speed_x, box_y, viz_speed_w, header_h);
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
 
-  if (s->is_metric) {
-    snprintf(speed_str, sizeof(speed_str), "%d", (int)(speed * 3.6 + 0.5));
-  } else {
-    snprintf(speed_str, sizeof(speed_str), "%d", (int)(speed * 2.2369363 + 0.5));
-  }
-  nvgFontFaceId(s->vg, s->font_sans_bold);
-  nvgFontSize(s->vg, 96*2.5);
-  nvgFillColor(s->vg, COLOR_WHITE);
-  nvgText(s->vg, viz_speed_x+viz_speed_w/2, 240, speed_str, NULL);
+  snprintf(speed_str, sizeof(speed_str), "%d", (int)speed);
+  ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 240, speed_str, 96*2.5, COLOR_WHITE, s->font_sans_bold);
+  ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 320, s->is_metric?"km/h":"mi/h", 36*2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
-  nvgFontFaceId(s->vg,  s->font_sans_regular);
-  nvgFontSize(s->vg, 36*2.5);
-  nvgFillColor(s->vg, COLOR_WHITE_ALPHA(200));
-
-  if (s->is_metric) {
-    nvgText(s->vg, viz_speed_x+viz_speed_w/2, 320, "km/h", NULL);
-  } else {
-    nvgText(s->vg, viz_speed_x+viz_speed_w/2, 320, "mph", NULL);
-  }
+  // lane width
+  snprintf(speed_str, sizeof(speed_str), "%.1fm", scene->laneWidth);
+  ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 960, speed_str, 70*2.5, COLOR_WHITE, s->font_sans_bold);
   
   
   /*
@@ -980,7 +968,7 @@ static void ui_draw_driver_view(UIState *s) {
 static void ui_draw_vision_brake(UIState *s) {
   const UIScene *scene = &s->scene;
   const int brake_size = 88;
-  const int brake_x = (scene->ui_viz_rx + (brake_size * 5) + (bdr_is * 3));
+  const int brake_x = (scene->ui_viz_rx + (brake_size * 3) + (bdr_is * 3));
   const int brake_y = (footer_y + ((footer_h - brake_size) / 2));
   const int brake_img_size = (brake_size * 1.5);
   const int brake_img_x = (brake_x - (brake_img_size / 2));
@@ -1024,7 +1012,7 @@ static void ui_draw_vision_header(UIState *s) {
   ui_draw_vision_speedlimit(s);
 #endif
   ui_draw_vision_speed(s);
-  ui_draw_vision_event(s);
+  //ui_draw_vision_event(s);
 }
 
 static int bb_ui_draw_measure(UIState *s,  const char* bb_value, const char* bb_uom, const char* bb_label,
@@ -1064,232 +1052,6 @@ static int bb_ui_draw_measure(UIState *s,  const char* bb_value, const char* bb_
 }
 
 static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) {
-  const UIScene *scene = &s->scene;
-  int bb_rx = bb_x + (int)(bb_w/2);
-  int bb_ry = bb_y;
-  int bb_h = 5;
-  NVGcolor lab_color = nvgRGBA(255, 255, 255, 200);
-  NVGcolor uom_color = nvgRGBA(255, 255, 255, 200);
-  int value_fontSize=30;
-  int label_fontSize=15;
-  int uom_fontSize = 15;
-  int bb_uom_dx =  (int)(bb_w /2 - uom_fontSize*2.5) ;
-
-  //add CPU temperature
-
-  
-  if (true) {
-        char val_str[16];
-    char uom_str[6];
-    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
-
-    char cpu_temp[5];
-    int fd;
-
-    //Read the file with the CPU temp.  1 is equal to .1 degree Celius.
-    fd = open("/sys/class/thermal/thermal_zone6/temp", O_RDONLY);
-    if(fd == -1)
-    {
-    //can't open
-    }
-    else
-    {
-      read(fd, &cpu_temp, 4);
-    }
-  
-  
-    cpu_temp[2] = '\0';
-    close(fd);
-  
-      // temp is alway in C * 10
-      snprintf(val_str, sizeof(val_str), "%s°C", (cpu_temp));
-      snprintf(uom_str, sizeof(uom_str), "");
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "CPU TEMP",
-        bb_rx, bb_ry, bb_uom_dx,
-        val_color, lab_color, uom_color,
-        value_fontSize, label_fontSize, uom_fontSize );
-    bb_ry = bb_y + bb_h;
-  }
-
-
-   //clarity-bru add battery temperature
-  
-  if (true) {
-    char val_str[16];
-    char uom_str[6];
-    char bat_temp[5] = "";
-    int fd;
-    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
-    if (s->scene.pa0 > 50) {
-      val_color = nvgRGBA(255, 0, 0, 200);
-    } else if (s->scene.pa0 > 40) {
-      val_color = nvgRGBA(255, 188, 3, 200);
-    }
-
-    //Read the file with the battery temp.  1 is equal to .1 degree Celius.
-    fd = open("/sys/class/power_supply/battery/subsystem/battery/temp", O_RDONLY);
-    if(fd == -1)
-    {
-      //can't open
-    }
-    else
-    {
-      read(fd, &bat_temp, 4);
-    }
-     bat_temp[2] = '\0';
-    
-    close(fd);
-
-
-    snprintf(val_str, sizeof(val_str), "%s°C", bat_temp);
-    snprintf(uom_str, sizeof(uom_str), "");
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "BAT TEMP",
-        bb_rx, bb_ry, bb_uom_dx,
-        val_color, lab_color, uom_color,
-        value_fontSize, label_fontSize, uom_fontSize );
-    bb_ry = bb_y + bb_h;
-  }
-  
-  
-    if(true) {
-    char val_str[16];
-    char uom_str[6];
-    char bat_lvl[4] = "";
-    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
-    int fd;
-  
-    //Read the file with the battery level.  Not expecting anything above 100%
-    fd = open("/sys/class/power_supply/battery/capacity", O_RDONLY);
-    if(fd == -1)
-    {
-      //can't open
-    }
-    else
-    {
-      read(fd, &bat_lvl, 3);
-    }
-
-    //clean up the last char (wierd rectangle symbol) in the line
-    for (int i=1; i<4; i++)
-    {
-      //if char is not a digit then replace it with null
-      if(isdigit(bat_lvl[i]) == 0)
-          {
-            bat_lvl[i] = '\0';
-            break;
-          }
-    }
-    close(fd);
-
-    snprintf(val_str, sizeof(val_str), "%s%%", bat_lvl);
-    snprintf(uom_str, sizeof(uom_str), "");
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "BAT LVL",
-        bb_rx, bb_ry, bb_uom_dx,
-        val_color, lab_color, uom_color,
-        value_fontSize, label_fontSize, uom_fontSize );
-    bb_ry = bb_y + bb_h;
-  }
-  
-  /*  
-  //add grey panda GPS accuracy
-  if (true) {
-    char val_str[16];
-    char uom_str[3];
-    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
-    //show red/orange if gps accuracy is high
-      if(scene->gpsAccuracyUblox > 0.59) {
-         val_color = nvgRGBA(255, 188, 3, 200);
-      }
-      if(scene->gpsAccuracyUblox > 0.8) {
-         val_color = nvgRGBA(255, 0, 0, 200);
-      }
-    // gps accuracy is always in meters
-    snprintf(val_str, sizeof(val_str), "%.2f", (s->scene.gpsAccuracyUblox));
-    snprintf(uom_str, sizeof(uom_str), "m");;
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "GPS PREC",
-        bb_rx, bb_ry, bb_uom_dx,
-        val_color, lab_color, uom_color,
-        value_fontSize, label_fontSize, uom_fontSize );
-    bb_ry = bb_y + bb_h;
-  }
-  */
-  //add grey panda GPS accuracy
-  /*if (true) {
-    char val_str[16];
-    char uom_str[3];
-    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
-    //show red/orange if gps accuracy is high
-      if(scene->gpsAccuracy > 0.59) {
-         val_color = nvgRGBA(255, 188, 3, 200);
-      }
-      if(scene->gpsAccuracy > 0.8) {
-         val_color = nvgRGBA(255, 0, 0, 200);
-      }
-    // gps accuracy is always in meters
-    snprintf(val_str, sizeof(val_str), "%.2f", (s->scene.gpsAccuracy));
-    snprintf(uom_str, sizeof(uom_str), "m");;
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "GPS PREC",
-        bb_rx, bb_ry, bb_uom_dx,
-        val_color, lab_color, uom_color,
-        value_fontSize, label_fontSize, uom_fontSize );
-    bb_ry = bb_y + bb_h;
-  }*/
-
-  /*
-    //add altitude
-  if (true) {
-    char val_str[16];
-    char uom_str[3];
-    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
-
-
-    snprintf(val_str, sizeof(val_str), "%.2f", (s->scene.altitudeUblox));
-    snprintf(uom_str, sizeof(uom_str), "m");;
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "ALTITUDE",
-        bb_rx, bb_ry, bb_uom_dx,
-        val_color, lab_color, uom_color,
-        value_fontSize, label_fontSize, uom_fontSize );
-    bb_ry = bb_y + bb_h;
-  }
-  */
-  //add free space - from bthaler1
-  /*
-  if (true) {
-    char val_str[16];
-    char uom_str[3];
-    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
-
-    //show red/orange if free space is low
-    if(scene->freeSpace < 0.4) {
-      val_color = nvgRGBA(255, 188, 3, 200);
-    }
-    if(scene->freeSpace < 0.2) {
-      val_color = nvgRGBA(255, 0, 0, 200);
-    }
-
-    snprintf(val_str, sizeof(val_str), "%.0f%%", s->scene.freeSpace* 100);
-    snprintf(uom_str, sizeof(uom_str), "");
-
-    bb_h +=bb_ui_draw_measure(s, val_str, uom_str, "FREE SPACE",
-      bb_rx, bb_ry, bb_uom_dx,
-      val_color, lab_color, uom_color,
-      value_fontSize, label_fontSize, uom_fontSize );
-    bb_ry = bb_y + bb_h;
-  }
-  
-  */
-  //finally draw the frame
-  bb_h += 20;
-  nvgBeginPath(s->vg);
-  nvgRoundedRect(s->vg, bb_x, bb_y, bb_w, bb_h, 20);
-  nvgStrokeColor(s->vg, nvgRGBA(255,255,255,80));
-  nvgStrokeWidth(s->vg, 6);
-  nvgStroke(s->vg);
-
-}
-
-
-static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w ) {
   const UIScene *scene = &s->scene;
   int bb_rx = bb_x + (int)(bb_w/2);
   int bb_ry = bb_y;
@@ -1367,17 +1129,17 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   if (true) {
     char val_str[16];
     char uom_str[6];
-    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
-      //show Orange if more than 6 degrees
-      //show red if  more than 12 degrees
-      if(((int)(scene->angleSteers) < -6) || ((int)(scene->angleSteers) > 6)) {
-        val_color = nvgRGBA(255, 188, 3, 200);
+    NVGcolor val_color = nvgRGBA(0, 255, 0, 200);
+      //show Orange if more than 30 degrees
+      //show red if  more than 50 degrees
+      if(((int)(scene->angleSteers) < -30) || ((int)(scene->angleSteers) > 30)) {
+        val_color = nvgRGBA(255, 175, 3, 200);
       }
-      if(((int)(scene->angleSteers) < -12) || ((int)(scene->angleSteers) > 12)) {
+      if(((int)(scene->angleSteers) < -55) || ((int)(scene->angleSteers) > 55)) {
         val_color = nvgRGBA(255, 0, 0, 200);
       }
       // steering is in degrees
-      snprintf(val_str, sizeof(val_str), "%.0f°",(scene->angleSteers));
+      snprintf(val_str, sizeof(val_str), "%.1f°",(scene->angleSteers));
 
       snprintf(uom_str, sizeof(uom_str), "");
     bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "REAL STEER",
@@ -1395,14 +1157,14 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     if (scene->engaged) {
       //show Orange if more than 6 degrees
       //show red if  more than 12 degrees
-      if(((int)(scene->angleSteersDes) < -6) || ((int)(scene->angleSteersDes) > 6)) {
-        val_color = nvgRGBA(255, 188, 3, 200);
+      if(((int)(scene->angleSteersDes) < -30) || ((int)(scene->angleSteersDes) > 30)) {
+        val_color = nvgRGBA(255, 255, 255, 200);
       }
-      if(((int)(scene->angleSteersDes) < -12) || ((int)(scene->angleSteersDes) > 12)) {
-        val_color = nvgRGBA(255, 0, 0, 200);
+      if(((int)(scene->angleSteersDes) < -50) || ((int)(scene->angleSteersDes) > 50)) {
+        val_color = nvgRGBA(255, 255, 255, 200);
       }
       // steering is in degrees
-      snprintf(val_str, sizeof(val_str), "%.0f°",(scene->angleSteersDes));
+      snprintf(val_str, sizeof(val_str), "%.1f°",(scene->angleSteersDes));
     } else {
        snprintf(val_str, sizeof(val_str), "-");
     }
@@ -1414,21 +1176,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     bb_ry = bb_y + bb_h;
   }
 
-  /*
-  //engineRPM
-  if (true) {
-    char val_str[16];
-    char uom_str[4];
-    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
-    snprintf(val_str, sizeof(val_str), "%d", (s->scene.engineRPM));
-    snprintf(uom_str, sizeof(uom_str), "%d", engineOnCount);
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "ENG RPM",
-        bb_rx, bb_ry, bb_uom_dx,
-        val_color, lab_color, uom_color,
-        value_fontSize, label_fontSize, uom_fontSize );
-    bb_ry = bb_y + bb_h;
-  }
-  */
+
   //finally draw the frame
   bb_h += 20;
   nvgBeginPath(s->vg);
@@ -1436,14 +1184,156 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     nvgStrokeColor(s->vg, nvgRGBA(255,255,255,80));
     nvgStrokeWidth(s->vg, 6);
     nvgStroke(s->vg);
+
 }
 
-static void bb_ui_draw_L_Extra(UIState *s)
+
+static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w ) {
+  const UIScene *scene = &s->scene;
+  int bb_rx = bb_x + (int)(bb_w/2);
+  int bb_ry = bb_y;
+  int bb_h = 5;
+  NVGcolor lab_color = nvgRGBA(255, 255, 255, 200);
+  NVGcolor uom_color = nvgRGBA(255, 255, 255, 200);
+  int value_fontSize=30;
+  int label_fontSize=15;
+  int uom_fontSize = 15;
+  int bb_uom_dx =  (int)(bb_w /2 - uom_fontSize*2.5) ;
+
+  //add CPU temperature
+  if (true) {
+        char val_str[16];
+    char uom_str[6];
+    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
+      if((int)(scene->cpuTemp/10) > 80) {
+        val_color = nvgRGBA(255, 188, 3, 200);
+      }
+      if((int)(scene->cpuTemp/10) > 92) {
+        val_color = nvgRGBA(255, 0, 0, 200);
+      }
+      // temp is alway in C * 10
+      snprintf(val_str, sizeof(val_str), "%d°C", (int)(scene->cpuTemp/10));
+      snprintf(uom_str, sizeof(uom_str), "");
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "CPU TEMP",
+        bb_rx, bb_ry, bb_uom_dx,
+        val_color, lab_color, uom_color,
+        value_fontSize, label_fontSize, uom_fontSize );
+    bb_ry = bb_y + bb_h;
+  }
+
+  //add CPU Usage
+  if (true) {
+        char val_str[16];
+    char uom_str[6];
+    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
+      if((int)(scene->cpuTemp/10) > 90) {
+        val_color = nvgRGBA(255, 188, 3, 200);
+      }
+      if((int)(scene->cpuTemp/10) > 95) {
+        val_color = nvgRGBA(255, 0, 0, 200);
+      }
+      snprintf(val_str, sizeof(val_str), "%d%%", (int)(scene->cpuPerc));
+      snprintf(uom_str, sizeof(uom_str), "");
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "CPU USAGE",
+        bb_rx, bb_ry, bb_uom_dx,
+        val_color, lab_color, uom_color,
+        value_fontSize, label_fontSize, uom_fontSize );
+    bb_ry = bb_y + bb_h;
+  }
+
+   //add battery temperature
+  if (true) {
+    char val_str[16];
+    char uom_str[6];
+    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
+    if((int)(scene->maxBatTemp/1000) > 40) {
+      val_color = nvgRGBA(255, 188, 3, 200);
+    }
+    if((int)(scene->maxBatTemp/1000) > 50) {
+      val_color = nvgRGBA(255, 0, 0, 200);
+    }
+    // temp is alway in C * 1000
+    snprintf(val_str, sizeof(val_str), "%d°C", (int)(scene->maxBatTemp/1000));
+    snprintf(uom_str, sizeof(uom_str), "");
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "BAT TEMP",
+        bb_rx, bb_ry, bb_uom_dx,
+        val_color, lab_color, uom_color,
+        value_fontSize, label_fontSize, uom_fontSize );
+    bb_ry = bb_y + bb_h;
+  }
+
+  //add battery level
+    if(true) {
+    char val_str[16];
+    char uom_str[6];
+    char bat_lvl[4] = "";
+    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
+    int fd;
+    fd = open("/sys/class/power_supply/battery/capacity", O_RDONLY);
+    if(fd == -1)
+    {
+    }
+    else
+    {
+      read(fd, &bat_lvl, 3);
+    }
+    for (int i=1; i<4; i++)
+    {
+      if(isdigit(bat_lvl[i]) == 0)
+          {
+            bat_lvl[i] = '\0';
+            break;
+          }
+    }
+    close(fd);
+
+    snprintf(val_str, sizeof(val_str), "%s%%", bat_lvl);
+    snprintf(uom_str, sizeof(uom_str), "");
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "BAT LVL",
+        bb_rx, bb_ry, bb_uom_dx,
+        val_color, lab_color, uom_color,
+        value_fontSize, label_fontSize, uom_fontSize );
+    bb_ry = bb_y + bb_h;
+  }
+
+  //add grey panda GPS accuracy
+  if (true) {
+    char val_str[16];
+    char uom_str[3];
+    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
+    //show red/orange if gps accuracy is high
+      if(scene->gpsAccuracy > 1.0) {
+         val_color = nvgRGBA(255, 188, 3, 200);
+      }
+      if(scene->gpsAccuracy > 1.5) {
+         val_color = nvgRGBA(255, 0, 0, 200);
+      }
+    // gps accuracy is always in meters
+    snprintf(val_str, sizeof(val_str), "%.2f", (s->scene.gpsAccuracy));
+    snprintf(uom_str, sizeof(uom_str), "m");;
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "GPS PREC",
+        bb_rx, bb_ry, bb_uom_dx,
+        val_color, lab_color, uom_color,
+        value_fontSize, label_fontSize, uom_fontSize );
+    bb_ry = bb_y + bb_h;
+  }
+
+  //finally draw the frame
+  bb_h += 20;
+  nvgBeginPath(s->vg);
+  nvgRoundedRect(s->vg, bb_x, bb_y, bb_w, bb_h, 20);
+  nvgStrokeColor(s->vg, nvgRGBA(255,255,255,80));
+  nvgStrokeWidth(s->vg, 6);
+  nvgStroke(s->vg);
+}
+
+
+static void drawLeftDebug(UIState *s)
 {
     const UIScene *scene = &s->scene;
 
     int w = 184;
-    int x = (s->scene.ui_viz_rx + (bdr_s*2)) + 197;
+    int x = (s->scene.ui_viz_rx + (bdr_s*2)) + 190;
     int y = 100;
     int xo = 180;
     int height = 70;
@@ -1453,71 +1343,34 @@ static void bb_ui_draw_L_Extra(UIState *s)
 
     char str[256];
 
-    /*snprintf(str, sizeof(str), "P: %.5f", scene->pid_p);
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-    y += height;
-    snprintf(str, sizeof(str), "I: %.5f", scene->pid_i);
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-    y += height;
-    snprintf(str, sizeof(str), "F: %.5f", scene->pid_f);
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-    y += height;
-    snprintf(str, sizeof(str), "D: %.5f", scene->pid_d);
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-    y += height;
-    snprintf(str, sizeof(str), "O: %.5f", scene->pid_output);
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);*/
-
-
-    /*snprintf(str, sizeof(str), "RS: %.5f", scene->indi.getRateSetPoint());
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-    y += height;
-    snprintf(str, sizeof(str), "AS: %.5f", scene->indi.getAccelSetPoint());
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-    y += height;
-    snprintf(str, sizeof(str), "AE: %.5f", scene->indi.getAccelError());
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-    y += height;
-    snprintf(str, sizeof(str), "DO: %.5f", scene->indi.getDelayedOutput());
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-    y += height;
-    snprintf(str, sizeof(str), "D: %.5f", scene->indi.getDelta());
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-    y += height;
-    snprintf(str, sizeof(str), "O: %.5f", scene->indi.getOutput());
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);*/
-
     ///////////
     // LQR
 
-    snprintf(str, sizeof(str), "I: %.3f", scene->lqr_i);
+    snprintf(str, sizeof(str), "I: %.3f", scene->lqr.getI());
     ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
     y += height;
-    snprintf(str, sizeof(str), "LQR: %.3f", scene->lqr_lqrOutput);
+    snprintf(str, sizeof(str), "LQR: %.3f", scene->lqr.getLqrOutput());
     ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
     y += height;
-    snprintf(str, sizeof(str), "O: %.3f", scene->lqr_output);
+    snprintf(str, sizeof(str), "O: %.3f", scene->lqr.getOutput());
     ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
     y += height;
-    snprintf(str, sizeof(str), "Sat: %d", scene->lqr_saturated ? 1 : 0);
+    snprintf(str, sizeof(str), "CURV: %.3f", scene->pCurvature * 1000.);
     ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-
-//    y += height;
-//    snprintf(str, sizeof(str), "CURV: %.3f", scene->pCurvature * 1000.);
-//    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-
-//    y += height;
-//    snprintf(str, sizeof(str), "sR-LP: %.3f", scene->lp_steerRatio);
-//    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
     y += height;
-    snprintf(str, sizeof(str), "sR-CP: %.3f", scene->cp_steerRatio);
+    snprintf(str, sizeof(str), "sR: %.3f", scene->lp_steerRatio);
     ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
+    y += height;
+    snprintf(str, sizeof(str), "Lane: %.2f, %.2f", scene->l_prob, scene->r_prob);
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 }
+
+
 
 
 static void bb_ui_draw_UI(UIState *s)
@@ -1529,11 +1382,11 @@ static void bb_ui_draw_UI(UIState *s)
 
   const int bb_dmr_w = 180;
   const int bb_dmr_x = scene->ui_viz_rx + scene->ui_viz_rw - bb_dmr_w - (bdr_is * 2);
-  const int bb_dmr_y = (box_y + (bdr_is * 1.5)) + 220;
+  const int bb_dmr_y = (box_y + (bdr_is * 1.5)) + 100;
 
   bb_ui_draw_measures_right(s, bb_dml_x, bb_dml_y, bb_dml_w);
   bb_ui_draw_measures_left(s, bb_dmr_x, bb_dmr_y, bb_dmr_w);
-  bb_ui_draw_L_Extra(s);
+//  bb_ui_draw_L_Extra(s);
   
     /* 
     //Code for logging (should be moved to another file?)
@@ -1567,6 +1420,9 @@ static void bb_ui_draw_UI(UIState *s)
       maxRPM = 0;
     }
     */
+    #if DEBUG_UI
+      drawLeftDebug(s);
+    #endif
 }
 //BB END: functions added for the display of various items
 
