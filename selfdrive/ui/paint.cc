@@ -8,7 +8,7 @@
 #include "ui.hpp"
 
 #include "common/util.h"
-
+#define DEBUG_UI 1
 #define NANOVG_GLES3_IMPLEMENTATION
 
 #include "nanovg_gl.h"
