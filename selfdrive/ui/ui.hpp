@@ -128,7 +128,8 @@ typedef struct UIScene {
   bool brakeLights;
   bool brakePressed;
   bool regenPressed;
-
+  float pCurvature;
+  float curvMaxSpeed;
 
   float curvature;
   int engaged;
