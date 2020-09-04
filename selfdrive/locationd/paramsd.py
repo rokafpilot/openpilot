@@ -43,6 +43,10 @@ class ParamsLearner:
                                     ObservationKind.ROAD_FRAME_YAW_RATE,
                                     np.array([[[-yaw_rate]]]),
                                     np.array([np.atleast_2d(yaw_rate_std**2)]))
+        self.kf.predict_and_observe(t,
+                                    ObservationKind.ROAD_FRAME_XY_SPEED,
+                                    np.array([[[v_calibrated[0], -v_calibrated[1]]]]),
+                                    np.array([np.diag([v_calibrated_std[0]**2, 1e6*v_calibrated_std[1]**2])]))
 
         self.kf.predict_and_observe(t, ObservationKind.ANGLE_OFFSET_FAST, np.array([[[0]]]))
 
