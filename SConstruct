@@ -12,6 +12,7 @@ AddOption('--asan',
           help='turn on ASAN')
 
 SetOption('num_jobs', 4)
+CacheDir('/data/build_cache')
 
 
 Decider('timestamp-newer')
