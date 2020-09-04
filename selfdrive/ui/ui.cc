@@ -593,14 +593,14 @@ void handle_message(UIState *s, Message * msg) {
     s->scene.brakeLights = datad.brakeLights;
     s->scene.brakePressed = datad.brakePressed;
     s->scene.regenPressed = datad.regenPressed;
-    s->scene.steeringTorqueEps = datad.getSteeringTorqueEps();
+    s->scene.steeringTorqueEps = datad.steeringTorqueEps;
 
   } else if (eventd.which == cereal_Event_pathPlan) {
       struct cereal_PathPlan datad;
       cereal_read_PathPlan(&datad, eventd.pathPlan);
-      s->scene.laneWidth = data.getLaneWidth();
-      s->scene.l_prob = data.getLProb();
-      s->scene.r_prob = data.getRProb();
+      s->scene.laneWidth = data.laneWidth;
+      s->scene.l_prob = data.lProb;
+      s->scene.r_prob = data.rProb;
 
   } else if (eventd.which == cereal_Event_thermal) {
     struct cereal_ThermalData datad;
