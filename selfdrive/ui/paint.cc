@@ -648,7 +648,7 @@ static void ui_draw_vision_speed(UIState *s) {
   #iidef DEBUG_UI
   snprintf(speed_str, sizeof(speed_str), "%.1fm", scene->laneWidth);
   ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 960, speed_str, 70*2.5, COLOR_WHITE, s->font_sans_bold);
-  ##endif
+  #endif
   
   /*
   //uptime
@@ -1350,7 +1350,7 @@ static void drawLeftDebug(UIState *s)
     #ifndef DEBUG_UI
     snprintf(str, sizeof(str), "sR: %.3f", scene->lp_steerRatio);
     ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-    ##else
+    #else
     snprintf(str, sizeof(str), "I: %.3f", scene->lqr.getI());
     ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
