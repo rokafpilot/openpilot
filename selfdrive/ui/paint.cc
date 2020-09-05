@@ -645,7 +645,7 @@ static void ui_draw_vision_speed(UIState *s) {
   ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 320, s->is_metric?"km/h":"mi/h", 36*2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
   // lane width
-  #iidef DEBUG_UI
+  #ifdef DEBUG_UI
   snprintf(speed_str, sizeof(speed_str), "%.1fm", scene->laneWidth);
   ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 960, speed_str, 70*2.5, COLOR_WHITE, s->font_sans_bold);
   #endif
