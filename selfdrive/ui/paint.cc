@@ -527,16 +527,16 @@ static void ui_draw_vision_maxspeed(UIState *s) {
 
   // Draw Speed Text
   nvgFontFaceId(s->vg, s->font_sans_bold);
-  nvgFontSize(s->vg, 48*2.5);
+  nvgFontSize(s->vg, 46*2.5);
   if (is_cruise_set) {
     snprintf(maxspeed_str, sizeof(maxspeed_str), "%d", maxspeed_calc);
     nvgFillColor(s->vg, COLOR_WHITE);
-    nvgText(s->vg, viz_maxspeed_x+(viz_maxspeed_xo/2)+(viz_maxspeed_w/2), 242, maxspeed_str, NULL);
+    nvgText(s->vg, viz_maxspeed_x+(viz_maxspeed_xo/2)+(viz_maxspeed_w/2), 222, maxspeed_str, NULL);
   } else {
     nvgFontFaceId(s->vg, s->font_sans_semibold);
     nvgFontSize(s->vg, 42*2.5);
     nvgFillColor(s->vg, COLOR_WHITE_ALPHA(100));
-    nvgText(s->vg, viz_maxspeed_x+(viz_maxspeed_xo/2)+(viz_maxspeed_w/2), 242, "-", NULL);
+    nvgText(s->vg, viz_maxspeed_x+(viz_maxspeed_xo/2)+(viz_maxspeed_w/2), 222, "-", NULL);
   }
 
 }
@@ -632,9 +632,36 @@ static void ui_draw_vision_speed(UIState *s) {
   if (s->is_metric){
     speed = s->scene.v_ego * 3.6 + 0.5;
   }
+
   const int viz_speed_w = 280;
   const int viz_speed_x = scene->ui_viz_rx+((scene->ui_viz_rw/2)-(viz_speed_w/2));
   char speed_str[32];
+
+// add blinker signal display
+  if(s->scene.leftBlinker) {
+    nvgBeginPath(s->vg);
+    nvgMoveTo(s->vg, viz_speed_x, box_y + header_h/4);
+    nvgLineTo(s->vg, viz_speed_x - viz_speed_w/2, box_y + header_h/4 + header_h/4);
+    nvgLineTo(s->vg, viz_speed_x, box_y + header_h/2 + header_h/4);
+    nvgClosePath(s->vg);
+    nvgFillColor(s->vg, nvgRGBA(23,134,68,s->scene.blinker_blinkingrate>=50?210:60));
+    nvgFill(s->vg);
+  }
+
+  if(s->scene.rightBlinker) {
+    nvgBeginPath(s->vg);
+    nvgMoveTo(s->vg, viz_speed_x+viz_speed_w, box_y + header_h/4);
+    nvgLineTo(s->vg, viz_speed_x+viz_speed_w + viz_speed_w/2, box_y + header_h/4 + header_h/4);
+    nvgLineTo(s->vg, viz_speed_x+viz_speed_w, box_y + header_h/2 + header_h/4);
+    nvgClosePath(s->vg);
+    nvgFillColor(s->vg, nvgRGBA(23,134,68,s->scene.blinker_blinkingrate>=50?210:60));
+    nvgFill(s->vg);
+  }	
+
+  if(s->scene.leftBlinker || s->scene.rightBlinker) {
+    s->scene.blinker_blinkingrate -= 5.5;
+    if(s->scene.blinker_blinkingrate<0) s->scene.blinker_blinkingrate = 120;
+  }
 
   nvgBeginPath(s->vg);
   nvgRect(s->vg, viz_speed_x, box_y, viz_speed_w, header_h);
@@ -645,10 +672,10 @@ static void ui_draw_vision_speed(UIState *s) {
   ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 320, s->is_metric?"km/h":"mi/h", 36*2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
   // lane width
-  #iidef DEBUG_UI
+  #ifdef DEBUG_UI
   snprintf(speed_str, sizeof(speed_str), "%.1fm", scene->laneWidth);
   ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 960, speed_str, 70*2.5, COLOR_WHITE, s->font_sans_bold);
-  ##endif
+  #endif
   
   /*
   //uptime
@@ -1350,7 +1377,7 @@ static void drawLeftDebug(UIState *s)
     #ifndef DEBUG_UI
     snprintf(str, sizeof(str), "sR: %.3f", scene->lp_steerRatio);
     ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-    ##else
+    #else
     snprintf(str, sizeof(str), "I: %.3f", scene->lqr.getI());
     ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
@@ -1375,9 +1402,6 @@ static void drawLeftDebug(UIState *s)
     ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
     #endif
 }
-
-
-
 
 static void bb_ui_draw_UI(UIState *s)
 {
@@ -1427,7 +1451,7 @@ static void bb_ui_draw_UI(UIState *s)
     }
     */
 
-    drawLeftDebug(s);
+    // drawLeftDebug(s);
 
 }
 //BB END: functions added for the display of various items
@@ -1727,11 +1751,15 @@ void ui_nvg_init(UIState *s) {
 
   s->font_courbd = nvgCreateFont(s->vg, "courbd", "../assets/fonts/courbd.ttf");
   assert(s->font_courbd >= 0);
-  s->font_sans_regular = nvgCreateFont(s->vg, "sans-regular", "../assets/fonts/opensans_regular.ttf");
+//  s->font_sans_regular = nvgCreateFont(s->vg, "sans-regular", "../assets/fonts/opensans_regular.ttf");
+  s->font_sans_regular = nvgCreateFont(s->vg, "sans-regular", "../assets/fonts/NanumGothic.ttf");
   assert(s->font_sans_regular >= 0);
-  s->font_sans_semibold = nvgCreateFont(s->vg, "sans-semibold", "../assets/fonts/opensans_semibold.ttf");
+//  s->font_sans_semibold = nvgCreateFont(s->vg, "sans-semibold", "../assets/fonts/opensans_semibold.ttf");
+  s->font_sans_semibold = nvgCreateFont(s->vg, "sans-semibold", "../assets/fonts/NanumGothicBold.ttf");
   assert(s->font_sans_semibold >= 0);
-  s->font_sans_bold = nvgCreateFont(s->vg, "sans-bold", "../assets/fonts/opensans_bold.ttf");
+//  s->font_sans_bold = nvgCreateFont(s->vg, "sans-bold", "../assets/fonts/opensans_bold.ttf");
+  s->font_sans_bold = nvgCreateFont(s->vg, "sans-bold", "../assets/fonts/NanumGothicExtraBold.ttf");
+
   assert(s->font_sans_bold >= 0);
 
   s->img_wheel = nvgCreateImage(s->vg, "../assets/img_chffr_wheel.png", 1);

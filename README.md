@@ -1,3 +1,8 @@
+<b This custom fork is support Korean voices and text : 075-kegman-lqr </b>
+
+- Reference fork : https://github.com/jc01rho-openpilot-BoltEV2019-KoKr/openpilot/tree/075-kegman-lqr
+- revised by David Kim
+
 <b>This custom fork is only working on the Bolt EV.</b>
 - Panda code : Jason Jshuler
 - Support single pedal driving (OP engage by curise main on switch "ON")

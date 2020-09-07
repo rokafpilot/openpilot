@@ -131,6 +131,10 @@ typedef struct UIScene {
   float pCurvature;
   float curvMaxSpeed;
 
+  bool leftBlinker;
+  bool rightBlinker;
+  int blinker_blinkingrate;
+
   float curvature;
   int engaged;
   bool engageable;
