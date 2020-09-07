@@ -43,10 +43,17 @@ static void ui_draw_sidebar_battery_text(UIState *s) {
   const int battery_img_y = 273;
 
   char battery_str[7];
-  snprintf(battery_str, sizeof(battery_str), "%d%%%s", s->scene.batteryPercent, strcmp(s->scene.batteryStatus, "Charging") == 0 ? "+" : "-");
-  nvgFillColor(s->vg, COLOR_WHITE);
+//  snprintf(battery_str, sizeof(battery_str), "%d%%%s", s->scene.batteryPercent, strcmp(s->scene.batteryStatus, "Charging") == 0 ? "+" : "-");
+  snprintf(battery_str, sizeof(battery_str), "%d%%", s->scene.batteryPercent);
+  if(strcmp(s->scene.batteryStatus, "Charging") == 0) {
+     nvgFillColor(s->vg, COLOR_YELLOW);
+     nvgFontFaceId(s->vg, s->font_sans_bold);
+  } else {
+     nvgFillColor(s->vg, COLOR_WHITE);
+     nvgFontFaceId(s->vg, s->font_sans_regular);
+  }
   nvgFontSize(s->vg, 44);
-  nvgFontFaceId(s->vg, s->font_sans_regular);
+//  nvgFontFaceId(s->vg, s->font_sans_regular);
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
   nvgTextBox(s->vg, battery_img_x, battery_img_y, battery_img_w, battery_str, NULL);
 }
@@ -61,10 +68,10 @@ static void ui_draw_sidebar_network_type(UIState *s) {
   char wifiIpAddress_str[15];
   snprintf(wifiIpAddress_str, sizeof(wifiIpAddress_str), "%s", s->scene.wifiIpAddress);
   nvgFillColor(s->vg, COLOR_WHITE);
-  nvgFontSize(s->vg, 40);
+  nvgFontSize(s->vg, 38);
   nvgFontFaceId(s->vg, s->font_sans_regular);
-  nvgTextAlign(s->vg, NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE);
-  nvgTextBox(s->vg, network_x, network_y + 50, 250, wifiIpAddress_str, NULL);
+  nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+  nvgTextBox(s->vg, network_x-20, network_y + 50, 250, wifiIpAddress_str, NULL);
 
   char network_type_str[32];
   if (s->scene.networkType <= 5) {
@@ -145,7 +152,7 @@ static void ui_draw_sidebar_temp_metric(UIState *s) {
 
   snprintf(temp_value_str, sizeof(temp_value_str), "%d", s->scene.paTemp);
   snprintf(temp_value_unit, sizeof(temp_value_unit), "%s", "°C");
-  snprintf(temp_label_str, sizeof(temp_label_str), "%s", "TEMP");
+  snprintf(temp_label_str, sizeof(temp_label_str), "%s", "온도"); //"TEMP");
   strcat(temp_value_str, temp_value_unit);
 
   ui_draw_sidebar_metric(s, temp_label_str, temp_value_str, temp_severity, temp_y_offset, NULL);
@@ -158,23 +165,23 @@ static void ui_draw_sidebar_panda_metric(UIState *s) {
 
   if (s->scene.hwType == cereal_HealthData_HwType_unknown) {
     panda_severity = 2;
-    snprintf(panda_message_str, sizeof(panda_message_str), "%s", "NO\nPANDA");
+    snprintf(panda_message_str, sizeof(panda_message_str), "%s", "판다\n연결안됨"); //"NO\nPANDA");
   } else if (s->scene.hwType == cereal_HealthData_HwType_whitePanda) {
     panda_severity = 0;
-    snprintf(panda_message_str, sizeof(panda_message_str), "%s", "PANDA\nACTIVE");
+    snprintf(panda_message_str, sizeof(panda_message_str), "%s", "판다\n연결됨"); //"PANDA\nACTIVE");
   } else if (
       (s->scene.hwType == cereal_HealthData_HwType_greyPanda) ||
       (s->scene.hwType == cereal_HealthData_HwType_blackPanda) ||
       (s->scene.hwType == cereal_HealthData_HwType_uno)) {
       if (s->scene.satelliteCount == -1) {
         panda_severity = 0;
-        snprintf(panda_message_str, sizeof(panda_message_str), "%s", "PANDA\nACTIVE");
+        snprintf(panda_message_str, sizeof(panda_message_str), "%s", "판다\n연결됨"); //"PANDA\nACTIVE");
       } else if (s->scene.satelliteCount < 6) {
         panda_severity = 1;
-        snprintf(panda_message_str, sizeof(panda_message_str), "%s", "PANDA\nNO GPS");
+        snprintf(panda_message_str, sizeof(panda_message_str), "%s", "판다\nNO GPS"); //"PANDA\nNO GPS");
       } else if (s->scene.satelliteCount >= 6) {
         panda_severity = 0;
-        snprintf(panda_message_str, sizeof(panda_message_str), "%s", "PANDA\nGOOD GPS");
+        snprintf(panda_message_str, sizeof(panda_message_str), "%s", "판다\nGOOD GPS"); //"PANDA\nGOOD GPS");
       }
   }
 
@@ -183,11 +190,11 @@ static void ui_draw_sidebar_panda_metric(UIState *s) {
 
 static void ui_draw_sidebar_connectivity(UIState *s) {
   if (s->scene.athenaStatus == NET_DISCONNECTED) {
-    ui_draw_sidebar_metric(s, NULL, NULL, 1, 180+158, "ATHENA\nOFFLINE");
+    ui_draw_sidebar_metric(s, NULL, NULL, 1, 180+158, "네트워크\n연결안됨"); //"ATHENA\nOFFLINE");
   } else if (s->scene.athenaStatus == NET_CONNECTED) {
-    ui_draw_sidebar_metric(s, NULL, NULL, 0, 180+158, "ATHENA\nONLINE");
+    ui_draw_sidebar_metric(s, NULL, NULL, 0, 180+158, "네트워크\n연결됨"); //"ATHENA\nONLINE");
   } else {
-    ui_draw_sidebar_metric(s, NULL, NULL, 2, 180+158, "ATHENA\nERROR");
+    ui_draw_sidebar_metric(s, NULL, NULL, 2, 180+158, "네트워크\n에러"); //"ATHENA\nERROR");
   }
 }
 

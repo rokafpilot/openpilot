@@ -595,6 +595,11 @@ void handle_message(UIState *s, Message * msg) {
     s->scene.regenPressed = datad.regenPressed;
     s->scene.steeringTorqueEps = datad.steeringTorqueEps;
 
+    if(s->scene.leftBlinker!=datad.leftBlinker || s->scene.rightBlinker!=datad.rightBlinker)
+      s->scene.blinker_blinkingrate = 100;
+    s->scene.leftBlinker = datad.leftBlinker;
+    s->scene.rightBlinker = datad.rightBlinker;
+
   } else if (eventd.which == cereal_Event_pathPlan) {
       struct cereal_PathPlan datad;
       cereal_read_PathPlan(&datad, eventd.pathPlan);
