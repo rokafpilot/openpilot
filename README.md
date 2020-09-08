@@ -1,4 +1,4 @@
-<b This custom fork is support Korean voices and text : 075-kegman-lqr </b>
+<b> This custom fork is support Korean voices and text : 075-kegman-lqr </b>
 
 
 - Korean voice/text contributes by David Kim(@kgkim70) (#671297dce), thx for contribution.
