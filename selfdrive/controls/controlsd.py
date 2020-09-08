@@ -269,8 +269,8 @@ def state_control(frame, rcv_frame, plan, path_plan, CS, CP, state, events, v_cr
   # actuators.gas, actuators.brake = LoC.update(active, CS.vEgo, CS.brakePressed, CS.standstill, CS.cruiseState.standstill,
   #                                             v_cruise_kph, v_acc_sol, plan.vTargetFuture, a_acc_sol, CP)
   #Bolt EV cannot LongControl wihout pedal.
-  actuators.gas=0
-  actuators.brake =0
+  actuators.gas = 0.1
+  actuators.brake = 0.1
   # Steering PID loop and lateral MPC
   actuators.steer, actuators.steerAngle, lac_log = LaC.update(active, CS.vEgo, CS.steeringAngle, CS.steeringRate, CS.steeringTorqueEps, CS.steeringPressed, CS.steeringRateLimited, CP, path_plan)
 
