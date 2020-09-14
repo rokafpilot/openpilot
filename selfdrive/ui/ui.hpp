@@ -47,6 +47,7 @@
 #define COLOR_WHITE nvgRGBA(255, 255, 255, 255)
 #define COLOR_WHITE_ALPHA(x) nvgRGBA(255, 255, 255, x)
 #define COLOR_YELLOW nvgRGBA(218, 202, 37, 255)
+#define COLOR_GREEN nvgRGBA(0, 255, 0, 255)
 #define COLOR_RED nvgRGBA(201, 34, 49, 255)
 #define COLOR_OCHRE nvgRGBA(218, 111, 37, 255)
 
@@ -143,6 +144,7 @@ typedef struct UIScene {
   bool uilayout_sidebarcollapsed;
   bool uilayout_mapenabled;
   bool uilayout_mockengaged;
+    bool uilayout_bbuidraw;
   // responsive layout
   int ui_viz_rx;
   int ui_viz_rw;

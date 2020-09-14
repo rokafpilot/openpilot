@@ -138,7 +138,7 @@ static void handle_driver_view_touch(UIState *s, int touch_x, int touch_y) {
 }
 
 static void handle_vision_touch(UIState *s, int touch_x, int touch_y) {
-  if (s->started && (touch_x >= s->scene.ui_viz_rx - bdr_s)
+  if (s->started && (touch_x >= s->scene.ui_viz_rx - bdr_s) && (touch_x < 1660)
     && (s->active_app != cereal_UiLayoutState_App_settings)) {
     if (!s->scene.frontview) {
       s->scene.uilayout_sidebarcollapsed = !s->scene.uilayout_sidebarcollapsed;
@@ -1150,11 +1150,6 @@ int main(int argc, char* argv[]) {
       ui_draw(s);
       glFinish();
       should_swap = true;
-    }
-    if (touched == 1) {
-      set_awake(s, true);
-      handle_sidebar_touch(s, touch_x, touch_y);
-      handle_vision_touch(s, touch_x, touch_y);
     }
 
     if (s->volume_timeout > 0) {

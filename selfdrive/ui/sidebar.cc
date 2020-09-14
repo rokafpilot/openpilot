@@ -46,7 +46,7 @@ static void ui_draw_sidebar_battery_text(UIState *s) {
 //  snprintf(battery_str, sizeof(battery_str), "%d%%%s", s->scene.batteryPercent, strcmp(s->scene.batteryStatus, "Charging") == 0 ? "+" : "-");
   snprintf(battery_str, sizeof(battery_str), "%d%%", s->scene.batteryPercent);
   if(strcmp(s->scene.batteryStatus, "Charging") == 0) {
-     nvgFillColor(s->vg, COLOR_YELLOW);
+     nvgFillColor(s->vg, COLOR_GREEN);
      nvgFontFaceId(s->vg, s->font_sans_bold);
   } else {
      nvgFillColor(s->vg, COLOR_WHITE);
