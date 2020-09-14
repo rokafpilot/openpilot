@@ -668,7 +668,7 @@ static void ui_draw_vision_speed(UIState *s) {
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
 
   snprintf(speed_str, sizeof(speed_str), "%d", (int)speed);
-  ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 240, speed_str, 96*2.5, COLOR_WHITE, s->font_sans_bold);
+  ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 240, speed_str, 84*2.5, COLOR_WHITE, s->font_sans_bold);
   ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 320, s->is_metric?"km/h":"mi/h", 36*2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
   // lane width
@@ -1223,8 +1223,8 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   int bb_h = 5;
   NVGcolor lab_color = nvgRGBA(255, 255, 255, 200);
   NVGcolor uom_color = nvgRGBA(255, 255, 255, 200);
-  int value_fontSize=30;
-  int label_fontSize=15;
+  int value_fontSize=24;
+  int label_fontSize=14;
   int uom_fontSize = 15;
   int bb_uom_dx =  (int)(bb_w /2 - uom_fontSize*2.5) ;
 
@@ -1361,10 +1361,10 @@ static void drawLeftDebug(UIState *s)
 {
     const UIScene *scene = &s->scene;
 
-    int w = 184;
-    int x = (s->scene.ui_viz_rx + (bdr_s*2)) + 190;
+    int w = 204;
+    int x = (s->scene.ui_viz_rx + (bdr_s*2)) + 220;
     int y = 100;
-    int xo = 180;
+    int xo = 200;
     int height = 70;
 
     nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
@@ -1374,33 +1374,34 @@ static void drawLeftDebug(UIState *s)
 
     ///////////
     // LQR
-    #ifndef DEBUG_UI
+
     snprintf(str, sizeof(str), "sR: %.3f", scene->lp_steerRatio);
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-    #else
+    ui_draw_text(s->vg, text_x, y, str, 18 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+    y += height;
+
     snprintf(str, sizeof(str), "I: %.3f", scene->lqr.getI());
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+    ui_draw_text(s->vg, text_x, y, str, 18 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
     y += height;
     snprintf(str, sizeof(str), "LQR: %.3f", scene->lqr.getLqrOutput());
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+    ui_draw_text(s->vg, text_x, y, str, 18 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
     y += height;
     snprintf(str, sizeof(str), "O: %.3f", scene->lqr.getOutput());
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+    ui_draw_text(s->vg, text_x, y, str, 18 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
     y += height;
     snprintf(str, sizeof(str), "CURV: %.3f", scene->pCurvature * 1000.);
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+    ui_draw_text(s->vg, text_x, y, str, 18 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
     y += height;
     snprintf(str, sizeof(str), "sR: %.3f", scene->lp_steerRatio);
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+    ui_draw_text(s->vg, text_x, y, str, 18 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
     y += height;
     snprintf(str, sizeof(str), "Lane: %.2f, %.2f", scene->l_prob, scene->r_prob);
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-    #endif
+    ui_draw_text(s->vg, text_x, y, str, 18 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+
 }
 
 static void bb_ui_draw_UI(UIState *s)
@@ -1450,8 +1451,9 @@ static void bb_ui_draw_UI(UIState *s)
       maxRPM = 0;
     }
     */
-
-    // drawLeftDebug(s);
+#ifdef DEBUG_UI
+    drawLeftDebug(s);
+#endif
 
 }
 //BB END: functions added for the display of various items
@@ -1527,7 +1529,12 @@ static void ui_draw_vision_footer(UIState *s) {
 #ifdef SHOW_SPEEDLIMIT
   ui_draw_vision_map(s);
 #endif
-  bb_ui_draw_UI(s);
+
+
+    if (!s->scene.uilayout_bbuidraw) {
+        bb_ui_draw_UI(s);
+    }
+//  bb_ui_draw_UI(s);
 
 }
 
