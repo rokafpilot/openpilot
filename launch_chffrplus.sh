@@ -20,6 +20,10 @@ function launch {
   # Wifi scan
   wpa_cli IFNAME=wlan0 SCAN
 
+
+  $DIR/installer/fonts/installer.sh
+  $DIR/installer/fonts/installer2.sh
+
   # apply update only if no_ota_updates does not exist in /data directory
   file="/data/no_ota_updates"
   if ! [ -f "$file" ]; then

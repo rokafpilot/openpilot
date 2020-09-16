@@ -1376,10 +1376,6 @@ static void drawLeftDebug(UIState *s)
     ///////////
     // LQR
 
-    snprintf(str, sizeof(str), "sR: %.3f", scene->lp_steerRatio);
-    ui_draw_text(s->vg, text_x, y, str, 18 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-    y += height;
-
     snprintf(str, sizeof(str), "I: %.3f", scene->lqr.getI());
     ui_draw_text(s->vg, text_x, y, str, 18 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
