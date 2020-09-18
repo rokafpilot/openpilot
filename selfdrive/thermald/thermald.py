@@ -165,9 +165,9 @@ def check_car_battery_voltage(should_start, health, charging_disabled, msg):
   elif msg.thermal.batteryCurrent < 0 and msg.thermal.batteryPercent > int(kegman.conf['battChargeMax']):
     charging_disabled = True
     os.system('echo "0" > /sys/class/power_supply/battery/charging_enabled')
-  else :
-    charging_disabled = False
-    os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
+#   else :
+#     charging_disabled = False
+#     os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
 
 
 
