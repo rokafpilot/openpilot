@@ -60,7 +60,7 @@ class LatControlLQR():
     angle_steers -= path_plan.angleOffset
 
     #added
-    torque_scale = min(torque_scale, interp(abs(self.angle_steers_des), [5., 45.], [0.6, 1.2]))
+    # torque_scale = min(torque_scale, interp(abs(self.angle_steers_des), [5., 45.], [0.6, 1.2]))
 
     # Update Kalman filter
     angle_steers_k = float(self.C.dot(self.x_hat))
