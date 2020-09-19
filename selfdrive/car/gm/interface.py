@@ -83,7 +83,7 @@ class CarInterface(CarInterfaceBase):
     # ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.2], [0.00]]
     # ret.lateralTuning.pid.kf = 0.00004   # full torque for 20 deg at 80mph means 0.00007818594
     ret.steerRateCost = 1.0 #높일수록 덜돌림
-    ret.steerActuatorDelay = 0.345  # Default delay, not measured yet #높일수록 미리 꺾음
+    ret.steerActuatorDelay = 0.245  # Default delay, not measured yet #높일수록 미리 꺾음
 
 
     if candidate == CAR.BOLT:
@@ -92,18 +92,18 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1616. + STD_CARGO_KG
       ret.safetyModel = car.CarParams.SafetyModel.gm
       ret.wheelbase = 2.60096
-      ret.steerRatio = 16.8
+      ret.steerRatio = 16.80
       ret.steerRatioRear = 0.
       ret.centerToFront = ret.wheelbase * 0.4 # wild guess
       ret.steerMaxBP = [30.*CV.KPH_TO_MS, 60*CV.KPH_TO_MS]
-      ret.steerMaxV = [1.35, 1.8]
+      ret.steerMaxV = [1.4, 1.2]
 
 
       ret.lateralTuning.init('lqr')
 
-      ret.lateralTuning.lqr.scaleBP = [0.]
-      ret.lateralTuning.lqr.scaleV = [1700.0]
-      ret.lateralTuning.lqr.ki = 0.0075
+      ret.lateralTuning.lqr.scaleBP = [20.*CV.KPH_TO_MS, 60.*CV.KPH_TO_MS]
+      ret.lateralTuning.lqr.scaleV = [1700.0, 1900.0]
+      ret.lateralTuning.lqr.ki = 0.0045
 
       ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
       ret.lateralTuning.lqr.b = [-1.92006585e-04, 3.95603032e-05]
@@ -114,7 +114,6 @@ class CarInterface(CarInterfaceBase):
 
 
       tire_stiffness_factor = 1.0
-
 
     # TODO: get actual value, for now starting with reasonable value for
     # civic and scaling by mass and wheelbase
