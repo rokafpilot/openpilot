@@ -87,8 +87,8 @@ void stop_capture() {
     system("killall -SIGINT screenrecord");
     captureState = CAPTURE_STATE_NOT_CAPTURING;
     elapsed_time = get_time() - start_time;
-    system("find /data/media/0/videos -mtime +14 -delete");
-    system("find /data/media/0/realdata -mtime +14 -delete");
+    system("find /data/media/0/videos -mtime +28 -delete");
+    system("find /data/media/0/realdata -mtime +28 -delete");
     if (elapsed_time < 10) {
       remove_file(videos_dir, filenames[captureNum]);
     } else {
