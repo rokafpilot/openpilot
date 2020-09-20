@@ -10,8 +10,11 @@
 #include "common/util.h"
 
 #define NANOVG_GLES3_IMPLEMENTATION
-#define DEBUG_UI
+
+
+//#define DEBUG_UI
 //#define DEBUG_UI_LAND_WIDTH
+
 
 #include "nanovg_gl.h"
 #include "nanovg_gl_utils.h"

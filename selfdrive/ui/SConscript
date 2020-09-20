@@ -12,6 +12,8 @@ else:
   libs += ['pthread', 'glfw']
   linkflags = []
 
+env.Append(CPPDEFINES=['DEBUG_UI','DEBUG_UI_LAND_WIDTH])
+
 env.Program('_ui', src,
   LINKFLAGS=linkflags,
   LIBS=libs)
