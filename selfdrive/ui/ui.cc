@@ -241,10 +241,9 @@ static void ui_init(UIState *s) {
 //    s->carparam_sock = SubSocket::create(s->ctx, "carParams");
 #ifdef DEBUG_UI
     s->liveparam_sock = SubSocket::create(s->ctx, "liveParameters");
-#endif
-#ifdef DEBUG_UI_LAND_WIDTH
     s->pathPlan_sock = SubSocket::create(s->ctx, "pathPlan");
-#endif DEBUG_UI_LAND_WIDTH
+#endif
+
 
   assert(s->model_sock != NULL);
   assert(s->controlsstate_sock != NULL);
@@ -262,10 +261,9 @@ static void ui_init(UIState *s) {
 //    assert(s->carparam_sock != NULL);
 #ifdef DEBUG_UI
     assert(s->liveparam_sock != NULL);
-#endif
-#ifdef DEBUG_UI_LAND_WIDTH
     assert(s->pathPlan_sock != NULL);
 #endif
+
 
 
 #if defined DEBUG_UI
@@ -283,26 +281,10 @@ static void ui_init(UIState *s) {
                               s->driverstate_sock,
                               s->dmonitoring_sock,
 //                              s->carparam_sock,
-                              s->liveparam_sock
-                             });
-#elif  defined DEBUG_UI_LAND_WIDTH
-    s->poller = Poller::create({
-                              s->model_sock,
-                              s->controlsstate_sock,
-                              s->uilayout_sock,
-                              s->livecalibration_sock,
-                              s->radarstate_sock,
-	                            s->carstate_sock,
-                              s->livempc_sock,
-                              s->thermal_sock,
-                              s->health_sock,
-                              s->ubloxgnss_sock,
-                              s->driverstate_sock,
-                              s->dmonitoring_sock,
-//                              s->carparam_sock,
-
+                              s->liveparam_sock,
                               s->pathPlan_sock
                              });
+
 #else
     s->poller = Poller::create({
                                        s->model_sock,

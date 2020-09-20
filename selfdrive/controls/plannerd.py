@@ -43,6 +43,7 @@ def plannerd_thread(sm=None, pm=None):
     if sm.updated['model']:
       PP.update(sm, pm, CP, VM)
     if sm.updated['radarState']:
+      # Bolt ev does now alloed longcontrol
       PL.update(sm, pm, CP, VM, PP)
 
 
