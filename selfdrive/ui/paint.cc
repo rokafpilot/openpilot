@@ -11,6 +11,11 @@
 
 #define NANOVG_GLES3_IMPLEMENTATION
 
+
+//#define DEBUG_UI
+//#define DEBUG_UI_LAND_WIDTH
+
+
 #include "nanovg_gl.h"
 #include "nanovg_gl_utils.h"
 
@@ -672,7 +677,7 @@ static void ui_draw_vision_speed(UIState *s) {
   ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 320, s->is_metric?"km/h":"mi/h", 36*2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
   // lane width
-  #ifdef DEBUG_UI
+  #ifdef DEBUG_UI_LAND_WIDTH
   snprintf(speed_str, sizeof(speed_str), "%.1fm", scene->laneWidth);
   ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 960, speed_str, 70*2.5, COLOR_WHITE, s->font_sans_bold);
   #endif
@@ -1374,10 +1379,6 @@ static void drawLeftDebug(UIState *s)
 
     ///////////
     // LQR
-
-    snprintf(str, sizeof(str), "sR: %.3f", scene->lp_steerRatio);
-    ui_draw_text(s->vg, text_x, y, str, 18 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
-    y += height;
 
     snprintf(str, sizeof(str), "I: %.3f", scene->lqr.getI());
     ui_draw_text(s->vg, text_x, y, str, 18 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);

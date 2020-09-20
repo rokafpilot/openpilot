@@ -119,7 +119,7 @@ class PathPlanner():
     self.angle_steers_des_prev = self.angle_steers_des_mpc
     #TODO : revert for SR learning
     VM.update_params(sm['liveParameters'].stiffnessFactor, sm['liveParameters'].steerRatio)# this will use SR learned values.
-    # VM.update_params(sm['liveParameters'].stiffnessFactor, CP.steerRatio) #use ignore SR learned params
+    #VM.update_params(sm['liveParameters'].stiffnessFactor, CP.steerRatio) #use ignore SR learned params
     curvature_factor = VM.curvature_factor(v_ego)
 
     #TODO : ignore kegmans json values : SR
@@ -154,7 +154,7 @@ class PathPlanner():
     # else:
     #   self.steerRatio = self.sR[0]
     self.steerRatio = VM.sR
-    print("steerRatio = ", self.steerRatio)
+    # print("steerRatio = ", self.steerRatio)
 
     self.LP.parse_model(sm['model'])
 

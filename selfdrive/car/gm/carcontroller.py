@@ -14,9 +14,9 @@ class CarControllerParams():
   def __init__(self):
     self.STEER_MAX = 300
     self.STEER_STEP = 1              # how often we update the steer cmd
-    self.STEER_DELTA_UP = 4          # ~0.75s time to peak torque (255/50hz/0.75s)
-    self.STEER_DELTA_DOWN = 4       # ~0.3s from peak torque to zero
-    self.MIN_STEER_SPEED = 6.5 * CV.KPH_TO_MS # m/s default.
+    self.STEER_DELTA_UP = 5          # ~0.75s time to peak torque (255/50hz/0.75s)
+    self.STEER_DELTA_DOWN = 5       # ~0.3s from peak torque to zero
+    self.MIN_STEER_SPEED = 5 * CV.KPH_TO_MS # receives m/s
     self.STEER_DRIVER_ALLOWANCE = 50   # allowed driver torque before start limiting
     self.STEER_DRIVER_MULTIPLIER = 4   # weight driver torque heavily
     self.STEER_DRIVER_FACTOR = 100     # from dbc
