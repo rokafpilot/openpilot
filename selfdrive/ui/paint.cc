@@ -1380,15 +1380,15 @@ static void drawLeftDebug(UIState *s)
     ///////////
     // LQR
 
-    snprintf(str, sizeof(str), "I: %.3f", scene->lqr.getI());
+    snprintf(str, sizeof(str), "I: %.3f", scene->lqr_i);
     ui_draw_text(s->vg, text_x, y, str, 18 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
     y += height;
-    snprintf(str, sizeof(str), "LQR: %.3f", scene->lqr.getLqrOutput());
+    snprintf(str, sizeof(str), "LQR: %.3f", scene->lqr_lqrOutput);
     ui_draw_text(s->vg, text_x, y, str, 18 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
     y += height;
-    snprintf(str, sizeof(str), "O: %.3f", scene->lqr.getOutput());
+    snprintf(str, sizeof(str), "O: %.3f", scene->lqr_output);
     ui_draw_text(s->vg, text_x, y, str, 18 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
     y += height;

@@ -487,7 +487,7 @@ void handle_message(UIState *s, Message * msg) {
 
 //  getting steering related data for dev ui
     s->scene.angleSteersDes = datad.angleSteersDes;
-//    s->scene.pCurvature = datad.pCurvature;
+    s->scene.pCurvature = datad.pCurvature;
 //    s->scene.curvMaxSpeed = datad.curvMaxSpeed;
 
     if (datad.alertSound != cereal_CarControl_HUDControl_AudibleAlert_none && datad.alertSound != s->alert_sound) {
