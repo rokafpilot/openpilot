@@ -444,7 +444,7 @@ void handle_message(UIState *s, Message * msg) {
 
 //    s->scene.lp_steerRatio = -0.1;
 
-  if (eventd.which == cereal_Event_controlsState && s->started) {
+  if (eventd.which == cereal_Event_controlsState) {
     struct cereal_ControlsState datad;
     cereal_read_ControlsState(&datad, eventd.controlsState);
 
@@ -454,6 +454,7 @@ void handle_message(UIState *s, Message * msg) {
 //    cereal_read_ControlsState_LateralINDIState(&idata, datad.lateralControlState.indiState);
     struct cereal_ControlsState_LateralLQRState ldata;
     cereal_read_ControlsState_LateralLQRState(&ldata, datad.lateralControlState.lqrState);
+
 //  getting lateral Pid datas for dev ui
 //      s->scene.pid_p = pdata.p;
 //      s->scene.pid_i = pdata.i;
