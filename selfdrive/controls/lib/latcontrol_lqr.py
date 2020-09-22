@@ -63,13 +63,15 @@ class LatControlLQR():
     # Update Kalman filter
     angle_steers_k = float(self.C.dot(self.x_hat))
     e = angle_steers - angle_steers_k
-    self.x_hat = self.A.dot(self.x_hat) + self.B.dot(eps_torque / torque_scale) + self.L.dot(e)
 
-    if v_ego < 0.3 or not active:
+
+    if v_ego < 1.3 or not active:
       lqr_log.active = False
       lqr_output = 0.
+      i = 0
       self.reset()
     else:
+      self.x_hat = self.A.dot(self.x_hat) + self.B.dot(eps_torque / torque_scale) + self.L.dot(e)
       lqr_log.active = True
 
       # LQR
