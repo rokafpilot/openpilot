@@ -47,7 +47,7 @@ def calc_d_poly(l_poly, r_poly, p_poly, l_prob, r_prob, lane_width, v_ego):
 
   lr_prob = l_prob + r_prob - l_prob * r_prob
 
-  if lr_prob > 0.6825 :
+  if lr_prob > 0.685 :
     lr_prob = max(0.925,lr_prob)
 
   d_poly_lane = (l_prob * path_from_left_lane + r_prob * path_from_right_lane) / (l_prob + r_prob + 0.0001)
