@@ -211,7 +211,7 @@ typedef struct UIScene {
   float lqr_output;
 
 
-  cereal::ControlsState::LateralLQRState::Reader lqr;
+//  cereal::ControlsState::LateralLQRState::Reader lqr;
     float laneWidth, l_prob, r_prob;
     float steeringTorqueEps;
 
