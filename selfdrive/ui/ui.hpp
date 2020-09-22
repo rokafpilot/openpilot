@@ -23,7 +23,7 @@
 #include "common/framebuffer.h"
 #include "common/modeldata.h"
 #include "messaging.hpp"
-#include "cereal/gen/cpp/log.capnp.h"
+#include "cereal/gen/c/log.capnp.h"
 
 #include "sound.hpp"
 
@@ -211,7 +211,7 @@ typedef struct UIScene {
   float lqr_output;
 
 
-  cereal::ControlsState::LateralLQRState::Reader lqr;
+//  cereal::ControlsState::LateralLQRState::Reader lqr;
     float laneWidth, l_prob, r_prob;
     float steeringTorqueEps;
 

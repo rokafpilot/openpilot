@@ -50,26 +50,26 @@ class LatControlLQR():
     #       steer_override, rate_limited, path_plan,"}")
     lqr_log = log.ControlsState.LateralLQRState.new_message()
 
-    steers_max = get_steer_max(CP, v_ego)
-    torque_scale = (0.45 + v_ego / 60.0)**2  # Scale actuator model with speed
-
-    # Subtract offset. Zero angle should correspond to zero torque
-    self.angle_steers_des = path_plan.angleSteers - path_plan.angleOffset
-    angle_steers -= path_plan.angleOffset
-
-    #added
-    # torque_scale = min(torque_scale, interp(abs(self.angle_steers_des), [5., 45.], [0.6, 1.2]))
-
-    # Update Kalman filter
-    angle_steers_k = float(self.C.dot(self.x_hat))
-    e = angle_steers - angle_steers_k
-    self.x_hat = self.A.dot(self.x_hat) + self.B.dot(eps_torque / torque_scale) + self.L.dot(e)
 
     if v_ego < 0.3 or not active:
       lqr_log.active = False
       lqr_output = 0.
+      i = 0
       self.reset()
     else:
+      steers_max = get_steer_max(CP, v_ego)
+      torque_scale = (0.45 + v_ego / 60.0)**2  # Scale actuator model with speed
+      # Subtract offset. Zero angle should correspond to zero torque
+      self.angle_steers_des = path_plan.angleSteers - path_plan.angleOffset
+      angle_steers -= path_plan.angleOffset
+
+      #added
+      # torque_scale = min(torque_scale, interp(abs(self.angle_steers_des), [5., 45.], [0.6, 1.2]))
+
+      # Update Kalman filter
+      angle_steers_k = float(self.C.dot(self.x_hat))
+      e = angle_steers - angle_steers_k
+      self.x_hat = self.A.dot(self.x_hat) + self.B.dot(eps_torque / torque_scale) + self.L.dot(e)
       lqr_log.active = True
 
       # LQR
