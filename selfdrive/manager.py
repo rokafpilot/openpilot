@@ -418,8 +418,7 @@ def manager_init(should_register=True):
     os.chmod(os.path.join(BASEDIR, "cereal", "libmessaging_shared.so"), 0o755)
 
 def manager_thread():
-  shutdownd = Process(name="shutdownd", target=launcher, args=("selfdrive.shutdownd",))
-  shutdownd.start()
+
   # now loop
   thermal_sock = messaging.sub_sock('thermal')
 
