@@ -265,9 +265,10 @@ class PathPlanner():
     mpc_nans = any(math.isnan(x) for x in self.mpc_solution[0].delta)
     t = sec_since_boot()
     if mpc_nans:
+
       self.libmpc.init(MPC_COST_LAT.PATH, MPC_COST_LAT.LANE, MPC_COST_LAT.HEADING, self.steerRateCost)
       self.cur_state[0].delta = math.radians(angle_steers - angle_offset) / self.steerRatio
-
+      print("mpc nans detected")
       if t > self.last_cloudlog_t + 5.0:
         self.last_cloudlog_t = t
         cloudlog.warning("Lateral mpc - nan: True")
