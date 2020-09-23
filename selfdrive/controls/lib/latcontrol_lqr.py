@@ -50,6 +50,8 @@ class LatControlLQR():
     #       steer_override, rate_limited, path_plan,"}")
     lqr_log = log.ControlsState.LateralLQRState.new_message()
 
+    angle_steers_k = float(self.C.dot(self.x_hat))
+
 
     if v_ego < 0.3 or not active:
       lqr_log.active = False
@@ -67,7 +69,7 @@ class LatControlLQR():
       # torque_scale = min(torque_scale, interp(abs(self.angle_steers_des), [5., 45.], [0.6, 1.2]))
 
       # Update Kalman filter
-      angle_steers_k = float(self.C.dot(self.x_hat))
+
       e = angle_steers - angle_steers_k
       self.x_hat = self.A.dot(self.x_hat) + self.B.dot(eps_torque / torque_scale) + self.L.dot(e)
       lqr_log.active = True
