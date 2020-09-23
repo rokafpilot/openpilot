@@ -7,6 +7,7 @@ name: automatic merge
 on:
   pull_request:
     branches: [ 075-kegman-lqr, 075-kegman-lqr-develop ]
+    types: [edited, opened, synchronize, reopened]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
