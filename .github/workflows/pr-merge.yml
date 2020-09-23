@@ -38,7 +38,7 @@ jobs:
 
       - name: Automatically Merge PR
         uses: plm9606/automerge_actions@1.2.2
-        if: ${{ github.base_ref == 075-kegman-lqr }}
+        if: ${{ github.base_ref == "075-kegman-lqr" }}
         with:
           # 이벤트를 트리거하고 싶은 라벨 이름을 설정합니다. 기본 이름은 "automerge" 입니다.
           label-name: automerge
@@ -51,7 +51,7 @@ jobs:
 
       - name: Automatically Merge PR
         uses: plm9606/automerge_actions@1.2.2
-        if: ${{ github.base_ref == 075-kegman-lqr-develop }}
+        if: ${{ github.base_ref == "075-kegman-lqr-develop" }}
         with:
           # 이벤트를 트리거하고 싶은 라벨 이름을 설정합니다. 기본 이름은 "automerge" 입니다.
           label-name: automerge
