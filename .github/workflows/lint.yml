@@ -34,5 +34,5 @@ jobs:
           use-black: false
           use-mypy: false
           use-isort: false
-          extra-flake8-options: --ignore=E501,E231,E502,E111,E114,E303,E722
+          extra-flake8-options: --select=F
         
