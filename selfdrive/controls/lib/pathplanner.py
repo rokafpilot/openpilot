@@ -126,7 +126,6 @@ class PathPlanner():
     # Get steerRatio and steerRateCost from kegman.json every x seconds
     # self.mpc_frame += 1
     # if self.mpc_frame % 500 == 0:
-    #   # live tune.py deleted ############
     #   # live tuning through /data/openpilot/tune.py overrides interface.py settings
     #   kegman = kegman_conf()
     #   if kegman.conf['tuneGernby'] == "1":

@@ -5,9 +5,8 @@ import re
 
 if sys.version < '3':
     # Python2.x imports
-    # import Queue
-    # import codecs
-    pass
+    import Queue
+    import codecs
 else:
     # Python 3.x imports
     import queue
@@ -21,30 +20,30 @@ def check_token(token):
     return valid.match(token)
 
 # We need to do some things different pending if its Python 2.x or 3.x
-# if sys.version < '3':
-#     def to_unicode(ch):
-#         return codecs.unicode_escape_decode(ch)[0]
-#
-#     def is_unicode(ch):
-#         return isinstance(ch, unicode)
-#
-#     def create_unicode(ch):
-#         try:
-#             return unicode(ch, 'utf-8')
-#         except UnicodeDecodeError as e:
-#             return str(e)
-#
-#     def create_queue(max_size):
-#         return Queue.Queue(max_size)
-# else:
-def to_unicode(ch):
-    return ch
+if sys.version < '3':
+    def to_unicode(ch):
+        return codecs.unicode_escape_decode(ch)[0]
 
-def is_unicode(ch):
-    return isinstance(ch, str)
+    def is_unicode(ch):
+        return isinstance(ch, unicode)
 
-def create_unicode(ch):
-    return str(ch)
+    def create_unicode(ch):
+        try:
+            return unicode(ch, 'utf-8')
+        except UnicodeDecodeError as e:
+            return str(e)
 
-def create_queue(max_size):
-    return queue.Queue(max_size)
+    def create_queue(max_size):
+        return Queue.Queue(max_size)
+else:
+    def to_unicode(ch):
+        return ch
+
+    def is_unicode(ch):
+        return isinstance(ch, str)
+
+    def create_unicode(ch):
+        return str(ch)
+
+    def create_queue(max_size):
+        return queue.Queue(max_size)
