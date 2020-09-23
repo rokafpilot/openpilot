@@ -3,6 +3,10 @@
 
 - Korean voice/text contributes by David Kim(@kgkim70) (#671297dce), thx for contribution.
 
+<b> LQR logic bit a changed from comma 075 pure original. <b>
+- check this
+- https://github.com/commaai/openpilot/compare/v0.7.5...jc01rho-openpilot-BoltEV2019-KoKr:075-kegman-lqr\
+
 
 <b>This custom fork is only working on the Bolt EV.</b>
 - Panda code : Jason Jshuler
