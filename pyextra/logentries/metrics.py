@@ -3,7 +3,7 @@ from threading import Lock
 from functools import wraps
 import logging
 import time
-import sys
+# import sys
 import psutil
 
 glob_time = 0

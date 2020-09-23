@@ -9,10 +9,10 @@ import time
 import requests
 
 from overpy import exception
-from overpy.__about__ import (
-    __author__, __copyright__, __email__, __license__, __summary__, __title__,
-    __uri__, __version__
-)
+# from overpy.__about__ import (
+#     __author__, __copyright__, __email__, __license__, __summary__, __title__,
+#     __uri__, __version__
+# )
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
