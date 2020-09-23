@@ -4,9 +4,8 @@ name: python lint
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the 075-kegman-lqr branch
-on:
-  push:
-    branches: [ 075-kegman-lqr, 075-kegman-lqr-develop ]
+on: push
+
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
