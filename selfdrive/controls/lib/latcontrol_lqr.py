@@ -71,8 +71,9 @@ class LatControlLQR():
       steering_angle -= path_plan.angleOffset
 
       # Update Kalman filter splitted
-      self.x_hat = self.A.dot(self.x_hat) + self.B.dot(eps_torque / torque_scale) + self.L.dot(e)
+      
       e = steering_angle - angle_steers_k
+      self.x_hat = self.A.dot(self.x_hat) + self.B.dot(eps_torque / torque_scale) + self.L.dot(e)
       # Update Kalman filter
 
 
