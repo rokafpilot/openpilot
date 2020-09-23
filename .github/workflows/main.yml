@@ -6,7 +6,7 @@ name: CI
 # events but only for the 075-kegman-lqr branch
 on:
   push:
-    branches: [ 075-kegman-lqr, 075-kegman-lqr-develop]
+    branches: [ 075-kegman-lqr, 075-kegman-lqr-develop ]
   pull_request:
     branches: [ 075-kegman-lqr, 075-kegman-lqr-develop ]
 
@@ -22,8 +22,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       
-      - name: Python lint
-        uses: WhyNotHugo/python-linting@v1.0.0
+
 
       - name: Python Linter
         uses: sunnysid3up/python-linter@v0.1-beta.7
