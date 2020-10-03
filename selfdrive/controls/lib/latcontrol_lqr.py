@@ -2,6 +2,7 @@
 import numpy as np
 from selfdrive.controls.lib.drive_helpers import get_steer_max
 from common.numpy_fast import clip,interp
+from selfdrive.config import Conversions as CV
 from common.realtime import DT_CTRL
 from cereal import log
 
@@ -63,7 +64,18 @@ class LatControlLQR():
       lqr_output = 0.
       saturated = False
       self.reset()
+
+    elif v_ego < 2.75 : # about below 10 kmh
+      lqr_log.active = False
+      lqr_output = 0.
+      saturated = False
+      self.reset()
+      if self.stoppingSteerAngle is None :
+        self.stoppingSteerAngle = steering_angle
+
     else:
+
+      self.stoppingSteerAngle = None
       torque_scale = (0.45 + v_ego / 60.0)**2  # Scale actuator model with speed
       lqr_log.active = True
       # Subtract offset. Zero angle should correspond to zero torque
@@ -71,7 +83,7 @@ class LatControlLQR():
       steering_angle -= path_plan.angleOffset
 
       # Update Kalman filter splitted
-      
+
       e = steering_angle - angle_steers_k
       self.x_hat = self.A.dot(self.x_hat) + self.B.dot(eps_torque / torque_scale) + self.L.dot(e)
       # Update Kalman filter
