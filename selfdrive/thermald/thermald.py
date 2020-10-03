@@ -427,8 +427,8 @@ def thermald_thread():
     msg.thermal.offroadPowerUsage = pm.get_power_used()
 
     msg.thermal.chargingError = current_filter.x > 0. and msg.thermal.batteryPercent < 90  # if current is positive, then battery is being discharged
-    msg.thermal.started = started_ts is not None
-    # msg.thermal.started = True
+    # msg.thermal.started = started_ts is not None #for release
+    msg.thermal.started = True # for debug
 
     msg.thermal.startedTs = int(1e9*(started_ts or 0))
 
