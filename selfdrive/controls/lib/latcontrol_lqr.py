@@ -1,7 +1,7 @@
 
 import numpy as np
 from selfdrive.controls.lib.drive_helpers import get_steer_max
-from common.numpy_fast import clip,interp
+from common.numpy_fast import clip,interp,mean
 from selfdrive.config import Conversions as CV
 from common.realtime import DT_CTRL
 from cereal import log
@@ -27,6 +27,10 @@ class LatControlLQR():
     self.sat_count_rate = 1.0 * DT_CTRL
     self.sat_limit = CP.steerLimitTimer
     self.angle_steers_des = 0.
+
+    self.stoppedSteerAngle = 0.
+    self.stoppingSteerAngle = 0.
+    self.stoppingFrame = 0
 
     self.reset()
 
@@ -63,19 +67,24 @@ class LatControlLQR():
       lqr_log.active = False
       lqr_output = 0.
       saturated = False
+      self.stoppingFrame = 0
+      self.stoppedSteerAngle = steering_angle
       self.reset()
 
     elif v_ego < 2.75 : # about below 10 kmh
       lqr_log.active = False
       lqr_output = 0.
       saturated = False
+      self.stoppingFrame = 0
       self.reset()
       if self.stoppingSteerAngle is None :
         self.stoppingSteerAngle = steering_angle
 
     else:
 
-      self.stoppingSteerAngle = None
+
+
+
       torque_scale = (0.45 + v_ego / 60.0)**2  # Scale actuator model with speed
       lqr_log.active = True
       # Subtract offset. Zero angle should correspond to zero torque
@@ -109,6 +118,12 @@ class LatControlLQR():
       self.output_steer = clip(self.output_steer, -steers_max, steers_max)
       check_saturation = (v_ego > 10) and not rate_limited and not steer_override
       saturated = self._check_saturation(self.output_steer, check_saturation, steers_max)
+
+      if self.stoppingFrame < 50:
+        self.angle_steers_des = mean([self.stoppedSteerAngle,self.stoppingSteerAngle])
+      else :
+        self.stoppingFrame = self.stoppingFrame +1
+
 
 
 

@@ -96,7 +96,7 @@ class CarInterface(CarInterfaceBase):
       ret.steerRatioRear = 0.
       ret.centerToFront = ret.wheelbase * 0.4 # wild guess
       ret.steerMaxBP = [30.*CV.KPH_TO_MS, 60*CV.KPH_TO_MS]
-      ret.steerMaxV = [1.65, 1.45]
+      ret.steerMaxV = [1.50, 1.30]
 
 
       ret.lateralTuning.init('lqr')
@@ -133,7 +133,7 @@ class CarInterface(CarInterfaceBase):
     ret.stoppingControl = True
     ret.startAccel = 0.8
 
-    ret.steerLimitTimer = 1.5
+    ret.steerLimitTimer = 2.5
     ret.radarTimeStep = 0.0667  # GM radar runs at 15Hz instead of standard 20Hz
 
     return ret
