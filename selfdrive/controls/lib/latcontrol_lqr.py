@@ -56,7 +56,6 @@ class LatControlLQR():
 
     steers_max = get_steer_max(CP, v_ego)
 
-
     # Update Kalman filter
     angle_steers_k = float(self.C.dot(self.x_hat))
     steering_angle = angle_steers
@@ -81,10 +80,6 @@ class LatControlLQR():
         self.stoppingSteerAngle = steering_angle
 
     else:
-
-
-
-
       torque_scale = (0.45 + v_ego / 60.0)**2  # Scale actuator model with speed
       lqr_log.active = True
       # Subtract offset. Zero angle should correspond to zero torque
@@ -119,13 +114,12 @@ class LatControlLQR():
       check_saturation = (v_ego > 10) and not rate_limited and not steer_override
       saturated = self._check_saturation(self.output_steer, check_saturation, steers_max)
 
-      if self.stoppingFrame < 75:
+      if self.stoppingFrame < 75 and  self.stoppingSteerAngle is not None  :
         self.angle_steers_des = mean([self.stoppedSteerAngle,self.stoppingSteerAngle,0.0])
         self.stoppingFrame = self.stoppingFrame +1
       else :
-        pass
-
-
+        if self.stoppingSteerAngle is not None :
+          self.stoppingSteerAngle = None
 
 
     lqr_log.steerAngle = angle_steers_k + path_plan.angleOffset
