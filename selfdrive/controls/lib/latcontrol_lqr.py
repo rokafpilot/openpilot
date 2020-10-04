@@ -121,8 +121,9 @@ class LatControlLQR():
 
       if self.stoppingFrame < 50:
         self.angle_steers_des = mean([self.stoppedSteerAngle,self.stoppingSteerAngle])
-      else :
         self.stoppingFrame = self.stoppingFrame +1
+      else :
+        pass
 
 
 
