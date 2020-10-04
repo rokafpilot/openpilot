@@ -110,7 +110,7 @@ class LatControlLQR():
         i = self.i_lqr + self.ki * self.i_rate * error
         control = lqr_output + i
 
-        if ((error >= 0 and (control <= steers_max or i < 0.0)) or \
+        if ((error >= 0 and (control <= steers_max or i < 0.0)) or
                 (error <= 0 and (control >= -steers_max or i > 0.0))):
           self.i_lqr = i
 
@@ -119,8 +119,8 @@ class LatControlLQR():
       check_saturation = (v_ego > 10) and not rate_limited and not steer_override
       saturated = self._check_saturation(self.output_steer, check_saturation, steers_max)
 
-      if self.stoppingFrame < 50:
-        self.angle_steers_des = mean([self.stoppedSteerAngle,self.stoppingSteerAngle])
+      if self.stoppingFrame < 75:
+        self.angle_steers_des = mean([self.stoppedSteerAngle,self.stoppingSteerAngle,0.0])
         self.stoppingFrame = self.stoppingFrame +1
       else :
         pass

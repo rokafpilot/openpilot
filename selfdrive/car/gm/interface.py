@@ -92,7 +92,7 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1616. + STD_CARGO_KG
       ret.safetyModel = car.CarParams.SafetyModel.gm
       ret.wheelbase = 2.60096
-      ret.steerRatio = 14.80
+      ret.steerRatio = 13.40
       ret.steerRatioRear = 0.
       ret.centerToFront = ret.wheelbase * 0.4 # wild guess
       ret.steerMaxBP = [30.*CV.KPH_TO_MS, 60*CV.KPH_TO_MS]
@@ -102,7 +102,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.init('lqr')
 
       ret.lateralTuning.lqr.scaleBP = [20.*CV.KPH_TO_MS, 60.*CV.KPH_TO_MS]
-      ret.lateralTuning.lqr.scaleV = [1825.0, 1650.0]
+      ret.lateralTuning.lqr.scaleV = [1825.0, 1525.0]
       ret.lateralTuning.lqr.ki = 0.025
 
       ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
