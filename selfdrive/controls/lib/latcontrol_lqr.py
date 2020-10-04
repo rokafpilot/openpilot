@@ -71,7 +71,7 @@ class LatControlLQR():
       self.stoppedSteerAngle = steering_angle
       self.reset()
 
-    elif v_ego < 2.75 : # about below 10 kmh
+    elif v_ego < 2.76 : # about below 10 kmh (2.76666)
       lqr_log.active = False
       lqr_output = 0.
       saturated = False
