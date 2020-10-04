@@ -13,7 +13,7 @@ else:
   linkflags = []
 
 #env.Append(CPPDEFINES=['DEBUG_UI','DEBUG_UI_LAND_WIDTH'])
-#env.Append(CPPDEFINES=['DEBUG_UI'])
+env.Append(CPPDEFINES=['DEBUG_UI'])
 
 env.Program('_ui', src,
   LINKFLAGS=linkflags,
