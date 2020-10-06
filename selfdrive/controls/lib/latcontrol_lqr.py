@@ -30,6 +30,7 @@ class LatControlLQR():
 
     self.stoppedSteerAngle = 0.
     self.stoppingSteerAngle = 0.
+    self.departingSteerAngle = 0.
     self.stoppingFrame = 0
 
     self.reset()
@@ -76,6 +77,7 @@ class LatControlLQR():
       saturated = False
       self.stoppingFrame = 0
       self.reset()
+      self.departingSteerAngle = steering_angle
       if self.stoppingSteerAngle is None :
         self.stoppingSteerAngle = steering_angle
 
@@ -115,7 +117,7 @@ class LatControlLQR():
       saturated = self._check_saturation(self.output_steer, check_saturation, steers_max)
 
       if self.stoppingFrame < 75 and  self.stoppingSteerAngle is not None  :
-        self.angle_steers_des = mean([self.stoppedSteerAngle,self.stoppingSteerAngle,0.0])
+        self.angle_steers_des = mean([self.stoppedSteerAngle,self.stoppingSteerAngle,self.departingSteerAngle])
         self.stoppingFrame = self.stoppingFrame +1
       else :
         if self.stoppingSteerAngle is not None :
