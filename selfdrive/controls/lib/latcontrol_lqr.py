@@ -9,12 +9,8 @@ from cereal import log
 
 class LatControlLQR():
   def __init__(self, CP):
-    #interpolar LQR
-    #self.scaleBP = CP.lateralTuning.lqr.scaleBP
-    #self.scaleV = CP.lateralTuning.lqr.scaleV
-
-    self.scale = CP.lateralTuning.lqr.scale
-
+    self.scaleBP = CP.lateralTuning.lqr.scaleBP
+    self.scaleV = CP.lateralTuning.lqr.scaleV
     self.ki = CP.lateralTuning.lqr.ki
 
     self.A = np.array(CP.lateralTuning.lqr.a).reshape((2,2))
@@ -104,7 +100,7 @@ class LatControlLQR():
 
       # LQR
       u_lqr = float(self.angle_steers_des / self.dc_gain - self.K.dot(self.x_hat))
-      lqr_output = torque_scale * u_lqr / self.scale
+      lqr_output = torque_scale * u_lqr / interp(v_ego, self.scaleBP, self.scaleV)
 
       # Integrator
       if steer_override:
