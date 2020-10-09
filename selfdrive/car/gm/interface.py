@@ -82,8 +82,8 @@ class CarInterface(CarInterfaceBase):
     # ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
     # ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.2], [0.00]]
     # ret.lateralTuning.pid.kf = 0.00004   # full torque for 20 deg at 80mph means 0.00007818594
-    ret.steerRateCost = 1.0 #높일수록 덜돌림
-    ret.steerActuatorDelay = 0.25  # Default delay, not measured yet #높일수록 미리 꺾음
+    ret.steerRateCost = 0.75 #높일수록 덜돌림
+    ret.steerActuatorDelay = 0.225  # Default delay, not measured yet #높일수록 미리 꺾음
 
 
     if candidate == CAR.BOLT:
@@ -92,7 +92,7 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1616. + STD_CARGO_KG
       ret.safetyModel = car.CarParams.SafetyModel.gm
       ret.wheelbase = 2.60096
-      ret.steerRatio = 13.15
+      ret.steerRatio = 16.8
       ret.steerRatioRear = 0.
       ret.centerToFront = ret.wheelbase * 0.4 # wild guess
       ret.steerMaxBP = [30.*CV.KPH_TO_MS, 60*CV.KPH_TO_MS]
@@ -102,7 +102,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.init('lqr')
 
       ret.lateralTuning.lqr.scaleBP = [20.*CV.KPH_TO_MS, 60.*CV.KPH_TO_MS]
-      ret.lateralTuning.lqr.scaleV = [1875.0, 1650.0]
+      ret.lateralTuning.lqr.scaleV = [1950.0, 1725.0]
       ret.lateralTuning.lqr.ki = 0.025
 
       ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
