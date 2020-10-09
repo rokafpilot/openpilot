@@ -1,3 +1,4 @@
+from selfdrive.ntune import nTune
 import os
 import math
 from common.realtime import sec_since_boot, DT_MDL
@@ -87,6 +88,7 @@ class PathPlanner():
     self.lane_change_timer = 0.0
     self.lane_change_ll_prob = 1.0
     self.prev_one_blinker = False
+    self.tune = nTune(CP) # 추가
 
 
       
@@ -119,7 +121,8 @@ class PathPlanner():
     self.angle_steers_des_prev = self.angle_steers_des_mpc
     #TODO : revert for SR learning
     VM.update_params(sm['liveParameters'].stiffnessFactor, sm['liveParameters'].steerRatio)# this will use SR learned values.
-    VM.sR = CP.steerRatio  #use ignore SR learned params
+    #VM.sR = CP.steerRatio
+    VM.sR = self.tune.get('steerRatio')  #use ignore SR learned params
 
     curvature_factor = VM.curvature_factor(v_ego)
 
@@ -176,6 +179,7 @@ class PathPlanner():
       else:
         self.pre_lane_change_timer = 0.0
 
+      # 자동차선변경(alc)에 영향
       # if self.alc_nudge_less and self.pre_lane_change_timer > self.alc_timer:
       #   torque_applied = True
       # else:
@@ -243,7 +247,7 @@ class PathPlanner():
     #   self.path_offset_i = 0.0
 
     # account for actuation delay
-    self.cur_state = calc_states_after_delay(self.cur_state, v_ego, angle_steers - angle_offset, curvature_factor, self.steerRatio, CP.steerActuatorDelay)
+    self.cur_state = calc_states_after_delay(self.cur_state, v_ego, angle_steers - angle_offset, curvature_factor, self.steerRatio,  self.tune.get('steerActuatorDelay'))
 
     v_ego_mpc = max(v_ego, 5.0)  # avoid mpc roughness due to low speed
     self.libmpc.run_mpc(self.cur_state, self.mpc_solution,
