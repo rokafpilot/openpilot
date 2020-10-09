@@ -421,6 +421,9 @@ struct CarParams {
     torqueV @1 :List(Int32);
   }
 
+
+
+
   struct LateralPIDTuning {
     kpBP @0 :List(Float32);
     kpV @1 :List(Float32);
@@ -428,6 +431,8 @@ struct CarParams {
     kiV @3 :List(Float32);
     kf @4 :Float32;
   }
+
+
 
   struct LongitudinalPIDTuning {
     kpBP @0 :List(Float32);
@@ -445,21 +450,37 @@ struct CarParams {
     actuatorEffectiveness @3 :Float32;
   }
 
-  struct LateralLQRTuning {
-    #scale @0 :Float32;
-    scaleBP @0 :List(Float32);
-    scaleV @1 :List(Float32);
-    ki @2 :Float32;
-    dcGain @3 :Float32;
 
+
+    struct LateralLQRTuning {
+      scale @0 :Float32;
+      ki @1 :Float32;
+      dcGain @2 :Float32;
+
+      # State space system
+      a @3 :List(Float32);
+      b @4 :List(Float32);
+      c @5 :List(Float32);
+
+      k @6 :List(Float32);  # LQR gain
+      l @7 :List(Float32);  # Kalman gain
+    }
+
+  ##interpolar LQR
+  #struct LateralLQRTuning {
+  #  scaleBP @0 :List(Float32);
+  #  scaleV @1 :List(Float32);
+  #  ki @2 :Float32;
+  #  dcGain @3 :Float32;
+  #
     # State space system
-    a @4 :List(Float32);
-    b @5 :List(Float32);
-    c @6 :List(Float32);
-
-    k @7 :List(Float32);  # LQR gain
-    l @8 :List(Float32);  # Kalman gain
-  }
+  #  a @4 :List(Float32);
+  #  b @5 :List(Float32);
+  #  c @6 :List(Float32);
+  #
+  #  k @7 :List(Float32);  # LQR gain
+  #  l @8 :List(Float32);  # Kalman gain
+  #}
 
   enum SafetyModel {
     silent @0;
