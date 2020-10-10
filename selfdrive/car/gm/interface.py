@@ -102,7 +102,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.init('lqr')
 
       ret.lateralTuning.lqr.scaleBP = [20.*CV.KPH_TO_MS, 60.*CV.KPH_TO_MS]
-      ret.lateralTuning.lqr.scaleV = [1950.0, 1725.0]
+      ret.lateralTuning.lqr.scaleV = [2250.0, 1925.0]
       ret.lateralTuning.lqr.ki = 0.025
 
       ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
