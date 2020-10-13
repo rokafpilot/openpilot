@@ -355,9 +355,9 @@ bool dashcam( UIState *s, int touch_x, int touch_y ) {
     // Assume car is not in drive so stop recording
     stop_capture();
   }
-  if (s->scene.v_ego > 3.1 && captureState == CAPTURE_STATE_PAUSED) {
+  if (s->scene.v_ego > 1.67 && captureState == CAPTURE_STATE_PAUSED) {
     start_capture();
-  } else if (s->scene.v_ego < 2.9 && captureState == CAPTURE_STATE_CAPTURING) {
+  } else if (s->scene.v_ego < 1.11 && captureState == CAPTURE_STATE_CAPTURING) {
     stop_capture();
     captureState = CAPTURE_STATE_PAUSED;
   }

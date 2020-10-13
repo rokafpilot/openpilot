@@ -82,7 +82,7 @@ class CarInterface(CarInterfaceBase):
     # ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
     # ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.2], [0.00]]
     # ret.lateralTuning.pid.kf = 0.00004   # full torque for 20 deg at 80mph means 0.00007818594
-    ret.steerRateCost = 0.4475 #높일수록 덜돌림
+    ret.steerRateCost = 0.75 #높일수록 덜돌림
     ret.steerActuatorDelay = 0.225  # Default delay, not measured yet #높일수록 미리 꺾음
 
 
@@ -92,18 +92,18 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1616. + STD_CARGO_KG
       ret.safetyModel = car.CarParams.SafetyModel.gm
       ret.wheelbase = 2.60096
-      ret.steerRatio = 16.80
+      ret.steerRatio = 16.8
       ret.steerRatioRear = 0.
       ret.centerToFront = ret.wheelbase * 0.4 # wild guess
       ret.steerMaxBP = [30.*CV.KPH_TO_MS, 60*CV.KPH_TO_MS]
-      ret.steerMaxV = [1.4, 1.2]
+      ret.steerMaxV = [1.375, 1.25]
 
 
       ret.lateralTuning.init('lqr')
 
       ret.lateralTuning.lqr.scaleBP = [20.*CV.KPH_TO_MS, 60.*CV.KPH_TO_MS]
-      ret.lateralTuning.lqr.scaleV = [1700.0, 1900.0]
-      ret.lateralTuning.lqr.ki = 0.0055
+      ret.lateralTuning.lqr.scaleV = [2250.0, 1925.0]
+      ret.lateralTuning.lqr.ki = 0.025
 
       ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
       ret.lateralTuning.lqr.b = [-1.92006585e-04, 3.95603032e-05]
@@ -133,7 +133,7 @@ class CarInterface(CarInterfaceBase):
     ret.stoppingControl = True
     ret.startAccel = 0.8
 
-    ret.steerLimitTimer = 1.5
+    ret.steerLimitTimer = 2.5
     ret.radarTimeStep = 0.0667  # GM radar runs at 15Hz instead of standard 20Hz
 
     return ret
