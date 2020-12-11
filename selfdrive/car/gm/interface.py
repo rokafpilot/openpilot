@@ -3,7 +3,7 @@ from cereal import car
 from common.numpy_fast import interp
 from selfdrive.config import Conversions as CV
 from selfdrive.car.gm.values import CAR, Ecu, ECU_FINGERPRINT, CruiseButtons, \
-                                    AccState, FINGERPRINTS
+  AccState, FINGERPRINTS
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, is_ecu_disconnected, gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
 
@@ -16,7 +16,7 @@ EventName = car.CarEvent.EventName
 class CarInterface(CarInterfaceBase):
   @staticmethod
   def compute_gb(accel, speed):
-  	# Ripped from compute_gb_honda in Honda's interface.py. Works well off shelf but may need more tuning
+    # Ripped from compute_gb_honda in Honda's interface.py. Works well off shelf but may need more tuning
     creep_brake = 0.0
     creep_speed = 2.68
     creep_brake_value = 0.10
@@ -211,9 +211,9 @@ class CarInterface(CarInterfaceBase):
     ret.buttonEvents = buttonEvents
 
     if self.CS.distance_button and self.CS.distance_button != self.CS.prev_distance_button:
-       self.CS.follow_level -= 1
-       if self.CS.follow_level < 1:
-         self.CS.follow_level = 3
+      self.CS.follow_level -= 1
+      if self.CS.follow_level < 1:
+        self.CS.follow_level = 3
 
     events = self.create_common_events(ret)
 
@@ -231,7 +231,7 @@ class CarInterface(CarInterfaceBase):
         events.add(EventName.buttonEnable)
       # do disable on button down
       #if b.type == ButtonType.cancel and b.pressed:
-        #events.add(EventName.buttonCancel)
+      #events.add(EventName.buttonCancel)
 
     ret.events = events.to_msg()
 
