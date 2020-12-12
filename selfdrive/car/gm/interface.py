@@ -103,11 +103,16 @@ class CarInterface(CarInterfaceBase):
       ret.steerRatioRear = 0.
       ret.centerToFront = ret.wheelbase * 0.4 # wild guess
       #PID tunning not to prevent oversteer
-      ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[10., 25.0], [10., 25.0]]
-      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.1, 0.12], [0.008, 0.016]]
-      ret.lateralTuning.pid.kdBP = [0.]
-      ret.lateralTuning.pid.kdV = [0.7]  #corolla from shane fork : 0.725
-      ret.lateralTuning.pid.kf = 0.00006
+      ret.lateralTuning.init('lqr')
+
+      ret.lateralTuning.lqr.scale = 1950.0
+      ret.lateralTuning.lqr.ki = 0.024
+
+      ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
+      ret.lateralTuning.lqr.b = [-1.92006585e-04, 3.95603032e-05]
+      ret.lateralTuning.lqr.c = [1., 0.]
+      ret.lateralTuning.lqr.k = [-110., 451.]
+      ret.lateralTuning.lqr.l = [0.33, 0.318]
       tire_stiffness_factor = 0.5
 
     elif candidate == CAR.MALIBU:
