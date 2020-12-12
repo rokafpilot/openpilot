@@ -116,7 +116,8 @@ class CarInterfaceBase():
     # Optionally allow to press gas at zero speed to resume.
     # e.g. Chrysler does not spam the resume button yet, so resuming with gas is handy. FIXME!
     if cs_out.brakePressed and (not self.CS.out.brakePressed or not cs_out.standstill):
-      events.add(EventName.pedalPressed)
+      None
+      # events.add(EventName.pedalPressed)
 
     if cs_out.cruiseState.enabled and not self.CS.out.cruiseState.enabled:
       events.add(EventName.pcmEnable)
