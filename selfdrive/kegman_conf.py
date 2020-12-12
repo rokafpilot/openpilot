@@ -44,8 +44,8 @@ class kegman_conf():
         self.config = json.load(f)
 
       if "battPercOff" not in self.config:
-        self.config.update({"battPercOff":"25"})
-        self.config.update({"carVoltageMinEonShutdown":"11800"})
+        self.config.update({"battPercOff":"99"})
+        self.config.update({"carVoltageMinEonShutdown":"12200"})
         self.config.update({"brakeStoppingTarget":"0.25"})
         self.element_updated = True
 
@@ -139,8 +139,8 @@ class kegman_conf():
         self.write_config(self.config)
 
     else:
-      self.config = {"cameraOffset":"0.06", "lastTrMode":"1", "battChargeMin":"60", "battChargeMax":"70", \
-                     "wheelTouchSeconds":"180", "accelerationMode":"1","battPercOff":"25", "carVoltageMinEonShutdown":"11800", \
+      self.config = {"cameraOffset":"0.06", "lastTrMode":"1", "battChargeMin":"40", "battChargeMax":"50", \
+                     "wheelTouchSeconds":"999", "battPercOff":"99", "carVoltageMinEonShutdown":"12200", \
                      "brakeStoppingTarget":"0.25", "tuneGernby":"1", \
                      "Kp":"-1", "Ki":"-1", "liveParams":"1", "leadDistance":"5", "deadzone":"0.0", \
                      "1barBP0":"-0.1", "1barBP1":"2.25", "2barBP0":"-0.1", "2barBP1":"2.5", "3barBP0":"0.0", \
@@ -149,7 +149,8 @@ class kegman_conf():
                      "steerRatio":"-1", "steerRateCost":"-1", "slowOnCurves":"0", "Kf":"-1", \
                      "sR_boost":"0", "sR_BP0":"0", "sR_BP1":"0", "sR_time":"1", \
                      "ALCnudgeLess":"0", "ALCminSpeed":"20.1168", "ALCtimer":"2.0", "CruiseDelta":"8", \
-                     "CruiseEnableMin":"40", "epsModded": "0"}
+                     "CruiseEnableMin":"40", "epsModded": "0","accelerationMode":"1"}
+
 
 
       self.write_config(self.config)
