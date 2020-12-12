@@ -113,6 +113,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.lqr.c = [1., 0.]
       ret.lateralTuning.lqr.k = [-110., 451.]
       ret.lateralTuning.lqr.l = [0.33, 0.318]
+      ret.lateralTuning.lqr.dcGain = 0.00225
       tire_stiffness_factor = 0.5
 
     elif candidate == CAR.MALIBU:
