@@ -229,7 +229,7 @@ class PowerMonitoring:
 
     now = sec_since_boot()
     panda_charging = (health.health.usbPowerMode != log.HealthData.UsbPowerMode.client)
-    BATT_PERC_OFF = 10 if LEON else 3
+    BATT_PERC_OFF = 101
 
     should_shutdown = False
     # Wait until we have shut down charging before powering down
