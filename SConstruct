@@ -19,6 +19,10 @@ AddOption('--asan',
           action='store_true',
           help='turn on ASAN')
 
+SetOption('num_jobs', 4)
+CacheDir('/data/build_cache')
+Decider('timestamp-match')
+
 # Rebuild cython extensions if python, distutils, or cython change
 cython_dependencies = [Value(v) for v in (sys.version, distutils.__version__, Cython.__version__)]
 Export('cython_dependencies')
